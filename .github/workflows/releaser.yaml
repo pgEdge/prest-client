@@ -1,4 +1,5 @@
-name: Release
+name: Release and Publish
+
 on:
   push:
     branches:
@@ -6,16 +7,35 @@ on:
 
 jobs:
   build:
-    name: Release
+    name: Release and Publish
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Release
         uses: justincy/github-action-npm-release@2.0.1
         id: release
+
       - name: Print release output
         if: ${{ steps.release.outputs.released == 'true' }}
         run: echo Release ID ${{ steps.release.outputs.release_id }}
+
+      # Publish to npm only if release was successful
+      - name: Set up Node.js environment (if release successful)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org'
+        if: ${{ steps.release.outputs.released == 'true' }}
+
+      - name: Install dependencies (if release successful)
+        run: npm ci
+        if: ${{ steps.release.outputs.released == 'true' }}
+
+      - name: Publish to npm (if release successful)
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        if: ${{ steps.release.outputs.released == 'true' }}
