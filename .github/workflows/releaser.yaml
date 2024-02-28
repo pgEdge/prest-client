@@ -31,7 +31,7 @@ jobs:
         if: ${{ steps.release.outputs.released == 'true' }}
 
       - name: Install dependencies (if release successful)
-        run: yarn ci
+        run: yarn install --frozen-lockfile
         if: ${{ steps.release.outputs.released == 'true' }}
 
       - name: Publish to npm (if release successful)
