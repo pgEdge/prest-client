@@ -31,11 +31,11 @@ jobs:
         if: ${{ steps.release.outputs.released == 'true' }}
 
       - name: Install dependencies (if release successful)
-        run: npm ci
+        run: yarn ci
         if: ${{ steps.release.outputs.released == 'true' }}
 
       - name: Publish to npm (if release successful)
-        run: npm publish
+        run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         if: ${{ steps.release.outputs.released == 'true' }}
