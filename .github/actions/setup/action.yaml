@@ -8,12 +8,12 @@ runs:
       with:
         node-version: '20.x'
         cache: 'yarn'
-        cache-dependency-path: '**/yarn.json'
+        cache-dependency-path: '**/yarn.lock'
 
     - name: 'Keep yarn cache for future workflows'
       uses: 'actions/cache@v3'
       with:
-        key: "${{ runner.os }}-node-${{ hashFiles('**/yarn.json') }}"
+        key: "${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}"
         path: '~/.yarn'
         restore-keys: |
           ${{ runner.os }}-node-
