@@ -24,7 +24,7 @@ contain only alphanumeric characters or underscores, and be between 3 and 15 cha
 
 #### Defined in
 
-[index.ts:5](https://github.com/pgEdge/prest-client/blob/ae3925b/src/index.ts#L5)
+[index.ts:5](https://github.com/pgEdge/prest-client/blob/a212fdd/src/index.ts#L5)
 
 ## Functions
 
@@ -48,7 +48,7 @@ Whether the string is a valid username.
 
 #### Defined in
 
-[index.ts:12](https://github.com/pgEdge/prest-client/blob/ae3925b/src/index.ts#L12)
+[index.ts:12](https://github.com/pgEdge/prest-client/blob/a212fdd/src/index.ts#L12)
 
 ___
 
@@ -72,4 +72,4 @@ The parsed integer value.
 
 #### Defined in
 
-[index.ts:22](https://github.com/pgEdge/prest-client/blob/ae3925b/src/index.ts#L22)
+[index.ts:22](https://github.com/pgEdge/prest-client/blob/a212fdd/src/index.ts#L22)
