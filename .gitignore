@@ -3,7 +3,6 @@
 .DS_Store
 node_modules/
 npm-shrinkwrap.json
-yarn.lock
 .pnp.*
 .yarn/
 .yarnrc
