@@ -19,5 +19,5 @@ runs:
           ${{ runner.os }}-node-
 
     - name: 'Install dependencies'
-      run: 'yarn ci'
+      run: 'yarn install --frozen-lockfile'
       shell: 'bash'
