@@ -1,0 +1,6 @@
+# Unlinted files and folders.
+
+# Generated docs, bundles and type definitions.
+docs/
+dist/
+types/
