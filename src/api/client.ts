@@ -95,7 +95,7 @@ export class PrestApiClient {
    */
   Table(
     tableName: string,
-    schemaName: string | undefined,
+    schemaName?: string | undefined,
   ): { List: () => Promise<any> } {
     if (!this.client) {
       throw new Error('Client not initialized');
