@@ -44,9 +44,3 @@ jobs:
 
       - name: 'Execute the build script'
         run: 'yarn run build'
-        
-env:
-  BASE_URL: ${{ secrets.BASE_URL }}
-  USER_NAME: ${{ secrets.USER_NAME }}
-  USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
-  DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
