@@ -38,4 +38,8 @@ jobs:
         run: yarn publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+          USER_NAME: ${{ secrets.USER_NAME }}
+          USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
         if: ${{ steps.release.outputs.released == 'true' }}
