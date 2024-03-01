@@ -48,7 +48,7 @@ Creates a new Prest API client with the provided options.
 
 #### Defined in
 
-[api/client.ts:55](https://github.com/pgEdge/prest-client/blob/1672b50/src/api/client.ts#L55)
+[api/client.ts:55](https://github.com/pgEdge/prest-client/blob/269f4a6/src/api/client.ts#L55)
 
 ## Properties
 
@@ -60,7 +60,7 @@ The underlying HTTP client for making requests to the Prest API.
 
 #### Defined in
 
-[api/client.ts:39](https://github.com/pgEdge/prest-client/blob/1672b50/src/api/client.ts#L39)
+[api/client.ts:39](https://github.com/pgEdge/prest-client/blob/269f4a6/src/api/client.ts#L39)
 
 ___
 
@@ -72,7 +72,7 @@ The options used to configure the client.
 
 #### Defined in
 
-[api/client.ts:48](https://github.com/pgEdge/prest-client/blob/1672b50/src/api/client.ts#L48)
+[api/client.ts:48](https://github.com/pgEdge/prest-client/blob/269f4a6/src/api/client.ts#L48)
 
 ## Accessors
 
@@ -88,13 +88,13 @@ Gets the name of the database to which the client is connected.
 
 #### Defined in
 
-[api/client.ts:123](https://github.com/pgEdge/prest-client/blob/1672b50/src/api/client.ts#L123)
+[api/client.ts:132](https://github.com/pgEdge/prest-client/blob/269f4a6/src/api/client.ts#L132)
 
 ## Methods
 
 ### Table
 
-▸ **Table**(`tableName`, `schemaName`): `Object`
+▸ **Table**(`tableName`): `Object`
 
 Returns an object for interacting with a specific table in the database.
 
@@ -102,8 +102,7 @@ Returns an object for interacting with a specific table in the database.
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `tableName` | `string` | The name of the table. |
-| `schemaName` | `undefined` \| `string` | The name of the schema to which the table belongs (optional). |
+| `tableName` | `undefined` \| `string` | The name of the table. |
 
 #### Returns
 
@@ -117,7 +116,7 @@ An object with methods for interacting with the table.
 
 #### Defined in
 
-[api/client.ts:96](https://github.com/pgEdge/prest-client/blob/1672b50/src/api/client.ts#L96)
+[api/client.ts:95](https://github.com/pgEdge/prest-client/blob/269f4a6/src/api/client.ts#L95)
 
 ___
 
@@ -133,4 +132,4 @@ Creates the underlying HTTP client with the necessary authentication headers.
 
 #### Defined in
 
-[api/client.ts:63](https://github.com/pgEdge/prest-client/blob/1672b50/src/api/client.ts#L63)
+[api/client.ts:63](https://github.com/pgEdge/prest-client/blob/269f4a6/src/api/client.ts#L63)

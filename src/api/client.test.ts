@@ -17,7 +17,7 @@ describe('PrestApiClient', () => {
   });
 
   it('should fetch categories successfully', async () => {
-    const response = await client.Table('categories', 'public').List();
+    const response = await client.Table('categories').List();
     expect(Array.isArray(response)).toBeTruthy();
     expect(response.length).toBeGreaterThan(0);
   });

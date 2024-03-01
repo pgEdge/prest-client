@@ -1,5 +1,5 @@
 /*!
- * prest-client v0.0.3
+ * prest-client v0.0.4
  * (c) pgEdge
  * Released under the MIT License.
  */
@@ -130,13 +130,24 @@
          * Returns an object for interacting with a specific table in the database.
          *
          * @param tableName - The name of the table.
-         * @param schemaName - The name of the schema to which the table belongs (optional).
          * @returns An object with methods for interacting with the table.
          */
-        PrestApiClient.prototype.Table = function (tableName, schemaName) {
+        PrestApiClient.prototype.Table = function (tableName) {
             var _this = this;
             if (!this.client) {
                 throw new Error('Client not initialized');
+            }
+            if (!tableName) {
+                throw new Error('Table name is required');
+            }
+            var schemaName;
+            if (tableName.includes('.')) {
+                var parts = tableName.split('.');
+                schemaName = parts[0];
+                tableName = parts[1];
+            }
+            else {
+                schemaName = 'public';
             }
             return {
                 List: function () { return __awaiter(_this, void 0, void 0, function () {
@@ -145,7 +156,7 @@
                         switch (_a.label) {
                             case 0:
                                 _a.trys.push([0, 3, , 4]);
-                                return [4 /*yield*/, this.client.get("".concat(this.options.base_url, "/").concat(this.database, "/").concat(schemaName !== null && schemaName !== void 0 ? schemaName : 'public', "/").concat(tableName))];
+                                return [4 /*yield*/, this.client.get("".concat(this.options.base_url, "/").concat(this.database, "/").concat(schemaName, "/").concat(tableName))];
                             case 1:
                                 response = _a.sent();
                                 return [4 /*yield*/, response.json()];

@@ -90,22 +90,31 @@ export class PrestApiClient {
    * Returns an object for interacting with a specific table in the database.
    *
    * @param tableName - The name of the table.
-   * @param schemaName - The name of the schema to which the table belongs (optional).
    * @returns An object with methods for interacting with the table.
    */
-  Table(
-    tableName: string,
-    schemaName?: string | undefined,
-  ): { List: () => Promise<any> } {
+  Table(tableName: string | undefined): { List: () => Promise<any> } {
     if (!this.client) {
       throw new Error('Client not initialized');
+    }
+
+    if (!tableName) {
+      throw new Error('Table name is required');
+    }
+
+    let schemaName: string | undefined;
+    if (tableName.includes('.')) {
+      const parts = tableName.split('.');
+      schemaName = parts[0];
+      tableName = parts[1];
+    } else {
+      schemaName = 'public';
     }
 
     return {
       List: async () => {
         try {
           const response = await this.client!.get(
-            `${this.options.base_url}/${this.database}/${schemaName ?? 'public'}/${tableName}`,
+            `${this.options.base_url}/${this.database}/${schemaName}/${tableName}`,
           );
           return await response.json();
         } catch (error: any) {

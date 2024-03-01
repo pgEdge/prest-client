@@ -51,10 +51,9 @@ export declare class PrestApiClient {
      * Returns an object for interacting with a specific table in the database.
      *
      * @param tableName - The name of the table.
-     * @param schemaName - The name of the schema to which the table belongs (optional).
      * @returns An object with methods for interacting with the table.
      */
-    Table(tableName: string, schemaName: string | undefined): {
+    Table(tableName: string | undefined): {
         List: () => Promise<any>;
     };
     /**
