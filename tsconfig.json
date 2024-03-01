@@ -30,7 +30,7 @@
     "lib": ["ES2020","esnext", "dom"],
     "skipDefaultLibCheck": true,
     "skipLibCheck": true,
-    "types": ["jest"]
+    "types": ["jest","node"]
   },
-  "include": ["./src/**/*.ts", "./src/**/*.tsx"]
+  "include": ["./src/**/*.ts", "./src/**/*.tsx", "src/env.config.ts"]
 }

@@ -1,4 +1,5 @@
 import { PrestApiClient, type PrestApiClientOptions } from './client';
+import envs from '../env.config';
 
 jest.mock('node-fetch');
 
@@ -7,10 +8,10 @@ describe('PrestApiClient', () => {
 
   beforeEach(() => {
     const options: PrestApiClientOptions = {
-      base_url: '',
-      user_name: '',
-      password: '',
-      database: '',
+      base_url: envs.BASE_URL,
+      user_name: envs.USER_NAME,
+      password: envs.USER_PASSWORD,
+      database: envs.DATABASE_NAME,
     };
     client = new PrestApiClient(options);
   });

@@ -48,7 +48,7 @@ Creates a new Prest API client with the provided options.
 
 #### Defined in
 
-[api/client.ts:55](https://github.com/pgEdge/prest-client/blob/e308d3f/src/api/client.ts#L55)
+[api/client.ts:55](https://github.com/pgEdge/prest-client/blob/a0b8e64/src/api/client.ts#L55)
 
 ## Properties
 
@@ -60,7 +60,7 @@ The underlying HTTP client for making requests to the Prest API.
 
 #### Defined in
 
-[api/client.ts:39](https://github.com/pgEdge/prest-client/blob/e308d3f/src/api/client.ts#L39)
+[api/client.ts:39](https://github.com/pgEdge/prest-client/blob/a0b8e64/src/api/client.ts#L39)
 
 ___
 
@@ -72,7 +72,7 @@ The options used to configure the client.
 
 #### Defined in
 
-[api/client.ts:48](https://github.com/pgEdge/prest-client/blob/e308d3f/src/api/client.ts#L48)
+[api/client.ts:48](https://github.com/pgEdge/prest-client/blob/a0b8e64/src/api/client.ts#L48)
 
 ## Accessors
 
@@ -88,7 +88,7 @@ Gets the name of the database to which the client is connected.
 
 #### Defined in
 
-[api/client.ts:123](https://github.com/pgEdge/prest-client/blob/e308d3f/src/api/client.ts#L123)
+[api/client.ts:123](https://github.com/pgEdge/prest-client/blob/a0b8e64/src/api/client.ts#L123)
 
 ## Methods
 
@@ -117,7 +117,7 @@ An object with methods for interacting with the table.
 
 #### Defined in
 
-[api/client.ts:96](https://github.com/pgEdge/prest-client/blob/e308d3f/src/api/client.ts#L96)
+[api/client.ts:96](https://github.com/pgEdge/prest-client/blob/a0b8e64/src/api/client.ts#L96)
 
 ___
 
@@ -133,4 +133,4 @@ Creates the underlying HTTP client with the necessary authentication headers.
 
 #### Defined in
 
-[api/client.ts:63](https://github.com/pgEdge/prest-client/blob/e308d3f/src/api/client.ts#L63)
+[api/client.ts:63](https://github.com/pgEdge/prest-client/blob/a0b8e64/src/api/client.ts#L63)

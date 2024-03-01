@@ -12,3 +12,4 @@ pnpm-workspace.yaml
 pnpmfile.js
 *.log
 *.log.*
+.env

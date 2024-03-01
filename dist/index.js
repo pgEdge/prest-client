@@ -1,5 +1,5 @@
 /*!
- * prest-client v0.0.2
+ * prest-client v0.0.3
  * (c) pgEdge
  * Released under the MIT License.
  */
