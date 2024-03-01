@@ -16,6 +16,9 @@ const options = {
     },
     ecmaVersion: 2021,
   },
+  rules: {
+    "@typescript-eslint/no-explicit-any": "off"
+  },
   plugins: ['@typescript-eslint'],
   extends: [
     'eslint:recommended',
