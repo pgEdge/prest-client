@@ -27,7 +27,7 @@ The base URL of the Prest API endpoint.
 
 #### Defined in
 
-[api/client.ts:11](https://github.com/pgEdge/prest-client/blob/a0b8e64/src/api/client.ts#L11)
+[api/client.ts:11](https://github.com/pgEdge/prest-client/blob/1672b50/src/api/client.ts#L11)
 
 ___
 
@@ -39,7 +39,7 @@ The name of the database to connect to.
 
 #### Defined in
 
-[api/client.ts:26](https://github.com/pgEdge/prest-client/blob/a0b8e64/src/api/client.ts#L26)
+[api/client.ts:26](https://github.com/pgEdge/prest-client/blob/1672b50/src/api/client.ts#L26)
 
 ___
 
@@ -51,7 +51,7 @@ The password for authentication with the Prest API.
 
 #### Defined in
 
-[api/client.ts:21](https://github.com/pgEdge/prest-client/blob/a0b8e64/src/api/client.ts#L21)
+[api/client.ts:21](https://github.com/pgEdge/prest-client/blob/1672b50/src/api/client.ts#L21)
 
 ___
 
@@ -63,4 +63,4 @@ The username for authentication with the Prest API.
 
 #### Defined in
 
-[api/client.ts:16](https://github.com/pgEdge/prest-client/blob/a0b8e64/src/api/client.ts#L16)
+[api/client.ts:16](https://github.com/pgEdge/prest-client/blob/1672b50/src/api/client.ts#L16)
