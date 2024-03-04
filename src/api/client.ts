@@ -40,6 +40,7 @@ export class PrestApiClient {
     | undefined
     | {
         get: (url: string) => Promise<Response>;
+        post: (url: string, body: any) => Promise<Response>;
       };
 
   /**
@@ -76,6 +77,22 @@ export class PrestApiClient {
 
           if (!response.ok) {
             throw new Error(`Failed to fetch data: ${response.statusText}`);
+          }
+
+          return response;
+        },
+        post: async (url: string, body: any) => {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': authHeader,
+            },
+            body: JSON.stringify(body),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Failed to insert data: ${response.statusText}`);
           }
 
           return response;
@@ -125,10 +142,28 @@ export class PrestApiClient {
      *
      * @example
      * const response = await client.Table('user').Show();
-     * // Retrieves data from the 'categories' table.
+     * // Retrieves data from the 'user' table.
      * // Executes GET `/show/:database/:schema/:table`.
      */
     Show: () => Promise<any>;
+
+    /**
+     * Inserts data into the specified table.
+     *
+     * @param data - The data to insert, structured as a JavaScript object with properties matching the table's columns.
+     * @returns A promise that resolves with the inserted data, including any generated IDs or timestamps.
+     * @throws An error if inserting data fails.
+     *
+     * @example
+     * const response = await client.Table('user').Insert({
+     *   user_name: 'Ronaldo',
+     *   description: 'Siuuu!!!',
+     *   picture: '\\x',
+     * });
+     * // Inserts a new row into the 'user' table.
+     * // Executes POST `/:database/:schema/:table`.
+     */
+    Insert: (data: any) => Promise<any>;
   } {
     if (!this.client) {
       throw new Error('Client not initialized');
@@ -169,6 +204,19 @@ export class PrestApiClient {
         } catch (error: any) {
           throw new Error(
             `Failed to show data for ${tableName}: ${error.message}`,
+          );
+        }
+      },
+      Insert: async (data: any) => {
+        try {
+          const response = await this.client!.post(
+            `${this.options.base_url}/${this.options.database}/${schemaName}/${tableName}`,
+            data,
+          );
+          return await response.json();
+        } catch (error: any) {
+          throw new Error(
+            `Failed to insert data into ${tableName}: ${error.message}`,
           );
         }
       },

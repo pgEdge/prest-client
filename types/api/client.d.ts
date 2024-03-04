@@ -85,10 +85,27 @@ export declare class PrestApiClient {
          *
          * @example
          * const response = await client.Table('user').Show();
-         * // Retrieves data from the 'categories' table.
+         * // Retrieves data from the 'user' table.
          * // Executes GET `/show/:database/:schema/:table`.
          */
         Show: () => Promise<any>;
+        /**
+         * Inserts data into the specified table.
+         *
+         * @param data - The data to insert, structured as a JavaScript object with properties matching the table's columns.
+         * @returns A promise that resolves with the inserted data, including any generated IDs or timestamps.
+         * @throws An error if inserting data fails.
+         *
+         * @example
+         * const response = await client.Table('user').Insert({
+         *   user_name: 'Ronaldo',
+         *   description: 'Siuuu!!!',
+         *   picture: '\\x',
+         * });
+         * // Inserts a new row into the 'user' table.
+         * // Executes POST `/:database/:schema/:table`.
+         */
+        Insert: (data: any) => Promise<any>;
     };
     /**
      * Gets the name of the database to which the client is connected.

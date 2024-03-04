@@ -48,19 +48,19 @@ Creates a new Prest API client with the provided options.
 
 #### Defined in
 
-[api/client.ts:55](https://github.com/pgEdge/prest-client/blob/fff97f2/src/api/client.ts#L55)
+[api/client.ts:56](https://github.com/pgEdge/prest-client/blob/30fa099/src/api/client.ts#L56)
 
 ## Properties
 
 ### client
 
-• `Private` **client**: `undefined` \| \{ `get`: (`url`: `string`) => `Promise`\<`Response`\>  }
+• `Private` **client**: `undefined` \| \{ `get`: (`url`: `string`) => `Promise`\<`Response`\> ; `post`: (`url`: `string`, `body`: `any`) => `Promise`\<`Response`\>  }
 
 The underlying HTTP client for making requests to the Prest API.
 
 #### Defined in
 
-[api/client.ts:39](https://github.com/pgEdge/prest-client/blob/fff97f2/src/api/client.ts#L39)
+[api/client.ts:39](https://github.com/pgEdge/prest-client/blob/30fa099/src/api/client.ts#L39)
 
 ___
 
@@ -72,7 +72,7 @@ The options used to configure the client.
 
 #### Defined in
 
-[api/client.ts:48](https://github.com/pgEdge/prest-client/blob/fff97f2/src/api/client.ts#L48)
+[api/client.ts:49](https://github.com/pgEdge/prest-client/blob/30fa099/src/api/client.ts#L49)
 
 ## Accessors
 
@@ -88,7 +88,7 @@ Gets the name of the database to which the client is connected.
 
 #### Defined in
 
-[api/client.ts:181](https://github.com/pgEdge/prest-client/blob/fff97f2/src/api/client.ts#L181)
+[api/client.ts:229](https://github.com/pgEdge/prest-client/blob/30fa099/src/api/client.ts#L229)
 
 ## Methods
 
@@ -112,12 +112,13 @@ An object with methods for interacting with the table.
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
+| `Insert` | (`data`: `any`) => `Promise`\<`any`\> | Inserts data into the specified table. **`Throws`** An error if inserting data fails. **`Example`** ```ts const response = await client.Table('user').Insert({ user_name: 'Ronaldo', description: 'Siuuu!!!', picture: '\\x', }); // Inserts a new row into the 'user' table. // Executes POST `/:database/:schema/:table`. ``` |
 | `List` | () => `Promise`\<`any`\> | Retrieves the structure of the specified table. **`Throws`** An error if fetching the table structure fails. **`Example`** ```ts const response = await client.Table('user').List(); // Queries the rows of the 'user' table. Public schema is used by default. // Executes GET `/:database/:schema/:table`. ``` **`Example`** ```ts const response = await client.Table('private.user').List(); // Retrieves the rows of the 'user' table in the 'private' schema. // Executes GET `/:database/:schema/:table`. ``` **`Example`** ```ts const response = await client.Table('public.').List(); // Retrieves a list of tables in the 'public' schema. // Executes GET `/:database/:schema`. // Note: The dot at the end is to ignore the table name. ``` |
-| `Show` | () => `Promise`\<`any`\> | Retrieves data from the specified table. **`Throws`** An error if fetching data from the table fails. **`Example`** ```ts const response = await client.Table('user').Show(); // Retrieves data from the 'categories' table. // Executes GET `/show/:database/:schema/:table`. ``` |
+| `Show` | () => `Promise`\<`any`\> | Retrieves data from the specified table. **`Throws`** An error if fetching data from the table fails. **`Example`** ```ts const response = await client.Table('user').Show(); // Retrieves data from the 'user' table. // Executes GET `/show/:database/:schema/:table`. ``` |
 
 #### Defined in
 
-[api/client.ts:95](https://github.com/pgEdge/prest-client/blob/fff97f2/src/api/client.ts#L95)
+[api/client.ts:112](https://github.com/pgEdge/prest-client/blob/30fa099/src/api/client.ts#L112)
 
 ___
 
@@ -133,4 +134,4 @@ Creates the underlying HTTP client with the necessary authentication headers.
 
 #### Defined in
 
-[api/client.ts:63](https://github.com/pgEdge/prest-client/blob/fff97f2/src/api/client.ts#L63)
+[api/client.ts:64](https://github.com/pgEdge/prest-client/blob/30fa099/src/api/client.ts#L64)

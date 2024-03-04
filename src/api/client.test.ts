@@ -49,4 +49,22 @@ describe('PrestApiClient', () => {
       expect(typeof column.table_schema).toBe('string');
     }
   });
+
+  it('should insert data into the table successfully', async () => {
+    const data = {
+      category_id: Math.floor(Math.random() * 1000),
+      category_name: 'Footballer',
+      description: 'Siuuu!!!',
+      picture: '\\x',
+    };
+
+    const response = await client.Table('categories').Insert(data);
+
+    expect(response).toHaveProperty('category_id');
+    expect(typeof response.category_id).toBe('number');
+    expect(response).toHaveProperty('category_name');
+    expect(response.category_name).toBe(data.category_name);
+    expect(response).toHaveProperty('description');
+    expect(response.description).toBe(data.description);
+  });
 });

@@ -117,6 +117,27 @@
                                     }
                                 });
                             }); },
+                            post: function (url, body) { return __awaiter(_this, void 0, void 0, function () {
+                                var response;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0: return [4 /*yield*/, fetch(url, {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'Authorization': authHeader_1,
+                                                },
+                                                body: JSON.stringify(body),
+                                            })];
+                                        case 1:
+                                            response = _a.sent();
+                                            if (!response.ok) {
+                                                throw new Error("Failed to insert data: ".concat(response.statusText));
+                                            }
+                                            return [2 /*return*/, response];
+                                    }
+                                });
+                            }); },
                         };
                     }
                     catch (error) {
@@ -182,6 +203,24 @@
                             case 3:
                                 error_2 = _a.sent();
                                 throw new Error("Failed to show data for ".concat(tableName, ": ").concat(error_2.message));
+                            case 4: return [2 /*return*/];
+                        }
+                    });
+                }); },
+                Insert: function (data) { return __awaiter(_this, void 0, void 0, function () {
+                    var response, error_3;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                _a.trys.push([0, 3, , 4]);
+                                return [4 /*yield*/, this.client.post("".concat(this.options.base_url, "/").concat(this.options.database, "/").concat(schemaName, "/").concat(tableName), data)];
+                            case 1:
+                                response = _a.sent();
+                                return [4 /*yield*/, response.json()];
+                            case 2: return [2 /*return*/, _a.sent()];
+                            case 3:
+                                error_3 = _a.sent();
+                                throw new Error("Failed to insert data into ".concat(tableName, ": ").concat(error_3.message));
                             case 4: return [2 /*return*/];
                         }
                     });
