@@ -42,6 +42,7 @@ export class PrestApiClient {
         get: (url: string) => Promise<Response>;
         post: (url: string, body: any) => Promise<Response>;
         put: (url: string, body: any) => Promise<Response>;
+        delete: (url: string) => Promise<Response>;
       };
 
   /**
@@ -110,6 +111,20 @@ export class PrestApiClient {
 
           if (!response.ok) {
             throw new Error(`Failed to update data: ${response.statusText}`);
+          }
+
+          return response;
+        },
+        delete: async (url: string) => {
+          const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+              Authorization: authHeader,
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`Failed to delete data: ${response.statusText}`);
           }
 
           return response;
@@ -205,6 +220,24 @@ export class PrestApiClient {
      * // Executes PUT `/:database/:schema/:table?field=value`.
      */
     Update: (field: string, value: any, data: any) => Promise<any>;
+
+    /**
+     * Deletes data from the specified table based on the provided field and value.
+     *
+     * @param field - The field to filter by for deletion.
+     * @param value - The value of the field to filter by for deletion.
+     * @returns A promise that resolves when the data is successfully deleted.
+     * @throws An error if deleting data fails.
+     *
+     * @example
+     * const response = await client.Table('user').Delete(
+     *   'user_id', // Field to filter by
+     *   userIdToDelete // Value of the field to filter by
+     * );
+     * // Deletes data from the 'user' table where 'user_id' equals 'userIdToDelete'.
+     * // Executes DELETE `/:database/:schema/:table?field=value`.
+     */
+    Delete: (field: string, value: any) => Promise<any>;
   } {
     if (!this.client) {
       throw new Error('Client not initialized');
@@ -227,7 +260,7 @@ export class PrestApiClient {
       List: async () => {
         try {
           const response = await this.client!.get(
-            `${this.options.base_url}/${this.database}/${schemaName}/${tableName}`,
+            `${this.base_url}/${this.database}/${schemaName}/${tableName}`,
           );
           return await response.json();
         } catch (error: any) {
@@ -239,7 +272,7 @@ export class PrestApiClient {
       Show: async () => {
         try {
           const response = await this.client!.get(
-            `${this.options.base_url}/show/${this.database}/${schemaName}/${tableName}`,
+            `${this.base_url}/show/${this.database}/${schemaName}/${tableName}`,
           );
           return await response.json();
         } catch (error: any) {
@@ -251,7 +284,7 @@ export class PrestApiClient {
       Insert: async (data: any) => {
         try {
           const response = await this.client!.post(
-            `${this.options.base_url}/${this.options.database}/${schemaName}/${tableName}`,
+            `${this.base_url}/${this.database}/${schemaName}/${tableName}`,
             data,
           );
           return await response.json();
@@ -263,12 +296,23 @@ export class PrestApiClient {
       },
       Update: async (field: string, value: any, data: any) => {
         try {
-          const url = `${this.options.base_url}/${this.database}/${schemaName}/${tableName}?${field}=${value}`;
+          const url = `${this.base_url}/${this.database}/${schemaName}/${tableName}?${field}=${value}`;
           const response = await this.client!.put(url, data);
           return await response.json();
         } catch (error: any) {
           throw new Error(
             `Failed to update data in ${tableName}: ${error.message}`,
+          );
+        }
+      },
+      Delete: async (field: string, value: any) => {
+        try {
+          const url = `${this.base_url}/${this.database}/${schemaName}/${tableName}?${field}=${value}`;
+          const response = await this.client!.delete(url);
+          return await response.json();
+        } catch (error: any) {
+          throw new Error(
+            `Failed to delete data in ${tableName}: ${error.message}`,
           );
         }
       },
@@ -280,5 +324,12 @@ export class PrestApiClient {
    */
   get database(): string {
     return this.options.database;
+  }
+
+  /**
+   * Gets the base URL of the Prest API endpoint to which the client is connected.
+   */
+  get base_url(): string {
+    return this.options.base_url;
   }
 }

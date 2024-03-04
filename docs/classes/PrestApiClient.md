@@ -21,6 +21,7 @@ PrestApiClient
 
 ### Accessors
 
+- [base\_url](PrestApiClient.md#base_url)
 - [database](PrestApiClient.md#database)
 
 ### Methods
@@ -48,19 +49,19 @@ Creates a new Prest API client with the provided options.
 
 #### Defined in
 
-[api/client.ts:57](https://github.com/pgEdge/prest-client/blob/9d0996d/src/api/client.ts#L57)
+[api/client.ts:58](https://github.com/pgEdge/prest-client/blob/70cbce0/src/api/client.ts#L58)
 
 ## Properties
 
 ### client
 
-• `Private` **client**: `undefined` \| \{ `get`: (`url`: `string`) => `Promise`\<`Response`\> ; `post`: (`url`: `string`, `body`: `any`) => `Promise`\<`Response`\> ; `put`: (`url`: `string`, `body`: `any`) => `Promise`\<`Response`\>  }
+• `Private` **client**: `undefined` \| \{ `delete`: (`url`: `string`) => `Promise`\<`Response`\> ; `get`: (`url`: `string`) => `Promise`\<`Response`\> ; `post`: (`url`: `string`, `body`: `any`) => `Promise`\<`Response`\> ; `put`: (`url`: `string`, `body`: `any`) => `Promise`\<`Response`\>  }
 
 The underlying HTTP client for making requests to the Prest API.
 
 #### Defined in
 
-[api/client.ts:39](https://github.com/pgEdge/prest-client/blob/9d0996d/src/api/client.ts#L39)
+[api/client.ts:39](https://github.com/pgEdge/prest-client/blob/70cbce0/src/api/client.ts#L39)
 
 ___
 
@@ -72,9 +73,25 @@ The options used to configure the client.
 
 #### Defined in
 
-[api/client.ts:50](https://github.com/pgEdge/prest-client/blob/9d0996d/src/api/client.ts#L50)
+[api/client.ts:51](https://github.com/pgEdge/prest-client/blob/70cbce0/src/api/client.ts#L51)
 
 ## Accessors
+
+### base\_url
+
+• `get` **base_url**(): `string`
+
+Gets the base URL of the Prest API endpoint to which the client is connected.
+
+#### Returns
+
+`string`
+
+#### Defined in
+
+[api/client.ts:332](https://github.com/pgEdge/prest-client/blob/70cbce0/src/api/client.ts#L332)
+
+___
 
 ### database
 
@@ -88,7 +105,7 @@ Gets the name of the database to which the client is connected.
 
 #### Defined in
 
-[api/client.ts:281](https://github.com/pgEdge/prest-client/blob/9d0996d/src/api/client.ts#L281)
+[api/client.ts:325](https://github.com/pgEdge/prest-client/blob/70cbce0/src/api/client.ts#L325)
 
 ## Methods
 
@@ -112,6 +129,7 @@ An object with methods for interacting with the table.
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
+| `Delete` | (`field`: `string`, `value`: `any`) => `Promise`\<`any`\> | Deletes data from the specified table based on the provided field and value. **`Throws`** An error if deleting data fails. **`Example`** ```ts const response = await client.Table('user').Delete( 'user_id', // Field to filter by userIdToDelete // Value of the field to filter by ); // Deletes data from the 'user' table where 'user_id' equals 'userIdToDelete'. // Executes DELETE `/:database/:schema/:table?field=value`. ``` |
 | `Insert` | (`data`: `any`) => `Promise`\<`any`\> | Inserts data into the specified table. **`Throws`** An error if inserting data fails. **`Example`** ```ts const response = await client.Table('user').Insert({ user_name: 'Ronaldo', description: 'Siuuu!!!', picture: '\\x', }); // Inserts a new row into the 'user' table. // Executes POST `/:database/:schema/:table`. ``` |
 | `List` | () => `Promise`\<`any`\> | Retrieves the structure of the specified table. **`Throws`** An error if fetching the table structure fails. **`Example`** ```ts const response = await client.Table('user').List(); // Queries the rows of the 'user' table. Public schema is used by default. // Executes GET `/:database/:schema/:table`. ``` **`Example`** ```ts const response = await client.Table('private.user').List(); // Retrieves the rows of the 'user' table in the 'private' schema. // Executes GET `/:database/:schema/:table`. ``` **`Example`** ```ts const response = await client.Table('public.').List(); // Retrieves a list of tables in the 'public' schema. // Executes GET `/:database/:schema`. // Note: The dot at the end is to ignore the table name. ``` |
 | `Show` | () => `Promise`\<`any`\> | Retrieves data from the specified table. **`Throws`** An error if fetching data from the table fails. **`Example`** ```ts const response = await client.Table('user').Show(); // Retrieves data from the 'user' table. // Executes GET `/show/:database/:schema/:table`. ``` |
@@ -119,7 +137,7 @@ An object with methods for interacting with the table.
 
 #### Defined in
 
-[api/client.ts:129](https://github.com/pgEdge/prest-client/blob/9d0996d/src/api/client.ts#L129)
+[api/client.ts:144](https://github.com/pgEdge/prest-client/blob/70cbce0/src/api/client.ts#L144)
 
 ___
 
@@ -135,4 +153,4 @@ Creates the underlying HTTP client with the necessary authentication headers.
 
 #### Defined in
 
-[api/client.ts:65](https://github.com/pgEdge/prest-client/blob/9d0996d/src/api/client.ts#L65)
+[api/client.ts:66](https://github.com/pgEdge/prest-client/blob/70cbce0/src/api/client.ts#L66)

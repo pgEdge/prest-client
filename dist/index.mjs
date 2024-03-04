@@ -153,6 +153,25 @@ var PrestApiClient = /** @class */ (function () {
                                 }
                             });
                         }); },
+                        delete: function (url) { return __awaiter(_this, void 0, void 0, function () {
+                            var response;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0: return [4 /*yield*/, fetch(url, {
+                                            method: 'DELETE',
+                                            headers: {
+                                                Authorization: authHeader_1,
+                                            },
+                                        })];
+                                    case 1:
+                                        response = _a.sent();
+                                        if (!response.ok) {
+                                            throw new Error("Failed to delete data: ".concat(response.statusText));
+                                        }
+                                        return [2 /*return*/, response];
+                                }
+                            });
+                        }); },
                     };
                 }
                 catch (error) {
@@ -192,7 +211,7 @@ var PrestApiClient = /** @class */ (function () {
                     switch (_a.label) {
                         case 0:
                             _a.trys.push([0, 3, , 4]);
-                            return [4 /*yield*/, this.client.get("".concat(this.options.base_url, "/").concat(this.database, "/").concat(schemaName, "/").concat(tableName))];
+                            return [4 /*yield*/, this.client.get("".concat(this.base_url, "/").concat(this.database, "/").concat(schemaName, "/").concat(tableName))];
                         case 1:
                             response = _a.sent();
                             return [4 /*yield*/, response.json()];
@@ -210,7 +229,7 @@ var PrestApiClient = /** @class */ (function () {
                     switch (_a.label) {
                         case 0:
                             _a.trys.push([0, 3, , 4]);
-                            return [4 /*yield*/, this.client.get("".concat(this.options.base_url, "/show/").concat(this.database, "/").concat(schemaName, "/").concat(tableName))];
+                            return [4 /*yield*/, this.client.get("".concat(this.base_url, "/show/").concat(this.database, "/").concat(schemaName, "/").concat(tableName))];
                         case 1:
                             response = _a.sent();
                             return [4 /*yield*/, response.json()];
@@ -228,7 +247,7 @@ var PrestApiClient = /** @class */ (function () {
                     switch (_a.label) {
                         case 0:
                             _a.trys.push([0, 3, , 4]);
-                            return [4 /*yield*/, this.client.post("".concat(this.options.base_url, "/").concat(this.options.database, "/").concat(schemaName, "/").concat(tableName), data)];
+                            return [4 /*yield*/, this.client.post("".concat(this.base_url, "/").concat(this.database, "/").concat(schemaName, "/").concat(tableName), data)];
                         case 1:
                             response = _a.sent();
                             return [4 /*yield*/, response.json()];
@@ -246,7 +265,7 @@ var PrestApiClient = /** @class */ (function () {
                     switch (_a.label) {
                         case 0:
                             _a.trys.push([0, 3, , 4]);
-                            url = "".concat(this.options.base_url, "/").concat(this.database, "/").concat(schemaName, "/").concat(tableName, "?").concat(field, "=").concat(value);
+                            url = "".concat(this.base_url, "/").concat(this.database, "/").concat(schemaName, "/").concat(tableName, "?").concat(field, "=").concat(value);
                             return [4 /*yield*/, this.client.put(url, data)];
                         case 1:
                             response = _a.sent();
@@ -259,6 +278,25 @@ var PrestApiClient = /** @class */ (function () {
                     }
                 });
             }); },
+            Delete: function (field, value) { return __awaiter(_this, void 0, void 0, function () {
+                var url, response, error_5;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            _a.trys.push([0, 3, , 4]);
+                            url = "".concat(this.base_url, "/").concat(this.database, "/").concat(schemaName, "/").concat(tableName, "?").concat(field, "=").concat(value);
+                            return [4 /*yield*/, this.client.delete(url)];
+                        case 1:
+                            response = _a.sent();
+                            return [4 /*yield*/, response.json()];
+                        case 2: return [2 /*return*/, _a.sent()];
+                        case 3:
+                            error_5 = _a.sent();
+                            throw new Error("Failed to delete data in ".concat(tableName, ": ").concat(error_5.message));
+                        case 4: return [2 /*return*/];
+                    }
+                });
+            }); },
         };
     };
     Object.defineProperty(PrestApiClient.prototype, "database", {
@@ -267,6 +305,16 @@ var PrestApiClient = /** @class */ (function () {
          */
         get: function () {
             return this.options.database;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(PrestApiClient.prototype, "base_url", {
+        /**
+         * Gets the base URL of the Prest API endpoint to which the client is connected.
+         */
+        get: function () {
+            return this.options.base_url;
         },
         enumerable: false,
         configurable: true

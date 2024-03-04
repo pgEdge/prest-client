@@ -129,10 +129,31 @@ export declare class PrestApiClient {
          * // Executes PUT `/:database/:schema/:table?field=value`.
          */
         Update: (field: string, value: any, data: any) => Promise<any>;
+        /**
+         * Deletes data from the specified table based on the provided field and value.
+         *
+         * @param field - The field to filter by for deletion.
+         * @param value - The value of the field to filter by for deletion.
+         * @returns A promise that resolves when the data is successfully deleted.
+         * @throws An error if deleting data fails.
+         *
+         * @example
+         * const response = await client.Table('user').Delete(
+         *   'user_id', // Field to filter by
+         *   userIdToDelete // Value of the field to filter by
+         * );
+         * // Deletes data from the 'user' table where 'user_id' equals 'userIdToDelete'.
+         * // Executes DELETE `/:database/:schema/:table?field=value`.
+         */
+        Delete: (field: string, value: any) => Promise<any>;
     };
     /**
      * Gets the name of the database to which the client is connected.
      */
     get database(): string;
+    /**
+     * Gets the base URL of the Prest API endpoint to which the client is connected.
+     */
+    get base_url(): string;
 }
 //# sourceMappingURL=client.d.ts.map
