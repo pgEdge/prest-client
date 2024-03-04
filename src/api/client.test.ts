@@ -21,4 +21,32 @@ describe('PrestApiClient', () => {
     expect(Array.isArray(response)).toBeTruthy();
     expect(response.length).toBeGreaterThan(0);
   });
+
+  it('should fetch information about a table successfully using Show method', async () => {
+    const response = await client.Table('categories').Show();
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBeGreaterThan(0);
+
+    for (const column of response) {
+      expect(column).toHaveProperty('position');
+      expect(column).toHaveProperty('data_type');
+      expect(column).toHaveProperty('max_length');
+      expect(column).toHaveProperty('table_name');
+      expect(column).toHaveProperty('column_name');
+      expect(column).toHaveProperty('is_nullable');
+      expect(column).toHaveProperty('is_generated');
+      expect(column).toHaveProperty('is_updatable');
+      expect(column).toHaveProperty('table_schema');
+      expect(column).toHaveProperty('default_value');
+
+      expect(typeof column.position).toBe('number');
+      expect(typeof column.data_type).toBe('string');
+      expect(typeof column.table_name).toBe('string');
+      expect(typeof column.column_name).toBe('string');
+      expect(typeof column.is_nullable).toBe('string');
+      expect(typeof column.is_generated).toBe('string');
+      expect(typeof column.is_updatable).toBe('string');
+      expect(typeof column.table_schema).toBe('string');
+    }
+  });
 });

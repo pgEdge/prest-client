@@ -92,7 +92,44 @@ export class PrestApiClient {
    * @param tableName - The name of the table.
    * @returns An object with methods for interacting with the table.
    */
-  Table(tableName: string | undefined): { List: () => Promise<any> } {
+  Table(tableName: string | undefined): { 
+    /**
+   * Retrieves the structure of the specified table.
+   *
+   * @returns A promise that resolves with the table structure.
+   * @throws An error if fetching the table structure fails.
+   *
+   * @example
+   * const response = await client.Table('user').List();
+   * // Queries the rows of the 'user' table. Public schema is used by default.
+   * // Executes GET `/:database/:schema/:table`.
+   *
+   * @example
+   * const response = await client.Table('private.user').List();
+   * // Retrieves the rows of the 'user' table in the 'private' schema.
+   * // Executes GET `/:database/:schema/:table`.
+   *
+   * @example
+   * const response = await client.Table('public.').List();
+   * // Retrieves a list of tables in the 'public' schema.
+   * // Executes GET `/:database/:schema`.
+   * // Note: The dot at the end is to ignore the table name.
+   */
+    List: () => Promise<any>, 
+  
+    /**
+   * Retrieves data from the specified table.
+   *
+   * @returns A promise that resolves with the data from the table.
+   * @throws An error if fetching data from the table fails.
+   *
+   * @example
+   * const response = await client.Table('user').Show();
+   * // Retrieves data from the 'categories' table.
+   * // Executes GET `/show/:database/:schema/:table`.
+   */
+    Show: () => Promise<any> 
+  } {
     if (!this.client) {
       throw new Error('Client not initialized');
     }
@@ -123,6 +160,18 @@ export class PrestApiClient {
           );
         }
       },
+      Show: async () => {
+        try {
+          const response = await this.client!.get(
+            `${this.options.base_url}/show/${this.database}/${schemaName}/${tableName}`,
+          );
+          return await response.json();
+        } catch (error: any) {
+          throw new Error(
+            `Failed to show data for ${tableName}: ${error.message}`,
+          );
+        }
+      }
     };
   }
 
