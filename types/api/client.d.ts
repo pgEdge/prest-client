@@ -106,6 +106,29 @@ export declare class PrestApiClient {
          * // Executes POST `/:database/:schema/:table`.
          */
         Insert: (data: any) => Promise<any>;
+        /**
+         * Updates data in the specified table based on the provided field and value.
+         *
+         * @param field - The field to filter by for updating.
+         * @param value - The value of the field to filter by for updating.
+         * @param data - The data to update, structured as a JavaScript object with properties matching the table's columns.
+         * @returns A promise that resolves with the updated data.
+         * @throws An error if updating data fails.
+         *
+         * @example
+         * const response = await client.Table('user').Update(
+         *   'user_id', // Field to filter by
+         *   userIdToUpdate, // Value of the field to filter by
+         *   {
+         *     user_name: 'NewName',
+         *     description: 'Updated description',
+         *     picture: '\\x',
+         *   }
+         * );
+         * // Updates data in the 'user' table where 'user_id' equals 'userIdToUpdate'.
+         * // Executes PUT `/:database/:schema/:table?field=value`.
+         */
+        Update: (field: string, value: any, data: any) => Promise<any>;
     };
     /**
      * Gets the name of the database to which the client is connected.

@@ -41,6 +41,7 @@ export class PrestApiClient {
     | {
         get: (url: string) => Promise<Response>;
         post: (url: string, body: any) => Promise<Response>;
+        put: (url: string, body: any) => Promise<Response>;
       };
 
   /**
@@ -93,6 +94,22 @@ export class PrestApiClient {
 
           if (!response.ok) {
             throw new Error(`Failed to insert data: ${response.statusText}`);
+          }
+
+          return response;
+        },
+        put: async (url: string, body: any) => {
+          const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': authHeader,
+            },
+            body: JSON.stringify(body),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Failed to update data: ${response.statusText}`);
           }
 
           return response;
@@ -164,6 +181,30 @@ export class PrestApiClient {
      * // Executes POST `/:database/:schema/:table`.
      */
     Insert: (data: any) => Promise<any>;
+
+    /**
+     * Updates data in the specified table based on the provided field and value.
+     *
+     * @param field - The field to filter by for updating.
+     * @param value - The value of the field to filter by for updating.
+     * @param data - The data to update, structured as a JavaScript object with properties matching the table's columns.
+     * @returns A promise that resolves with the updated data.
+     * @throws An error if updating data fails.
+     *
+     * @example
+     * const response = await client.Table('user').Update(
+     *   'user_id', // Field to filter by
+     *   userIdToUpdate, // Value of the field to filter by
+     *   {
+     *     user_name: 'NewName',
+     *     description: 'Updated description',
+     *     picture: '\\x',
+     *   }
+     * );
+     * // Updates data in the 'user' table where 'user_id' equals 'userIdToUpdate'.
+     * // Executes PUT `/:database/:schema/:table?field=value`.
+     */
+    Update: (field: string, value: any, data: any) => Promise<any>;
   } {
     if (!this.client) {
       throw new Error('Client not initialized');
@@ -217,6 +258,17 @@ export class PrestApiClient {
         } catch (error: any) {
           throw new Error(
             `Failed to insert data into ${tableName}: ${error.message}`,
+          );
+        }
+      },
+      Update: async (field: string, value: any, data: any) => {
+        try {
+          const url = `${this.options.base_url}/${this.database}/${schemaName}/${tableName}?${field}=${value}`;
+          const response = await this.client!.put(url, data);
+          return await response.json();
+        } catch (error: any) {
+          throw new Error(
+            `Failed to update data in ${tableName}: ${error.message}`,
           );
         }
       },

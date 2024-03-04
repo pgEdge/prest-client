@@ -5,6 +5,7 @@ jest.mock('node-fetch');
 
 describe('PrestApiClient', () => {
   let client: PrestApiClient;
+  const id: number = Math.floor(Math.random() * 1000);
 
   beforeEach(() => {
     const options: PrestApiClientOptions = {
@@ -52,7 +53,7 @@ describe('PrestApiClient', () => {
 
   it('should insert data into the table successfully', async () => {
     const data = {
-      category_id: Math.floor(Math.random() * 1000),
+      category_id: id,
       category_name: 'Footballer',
       description: 'Siuuu!!!',
       picture: '\\x',
@@ -66,5 +67,20 @@ describe('PrestApiClient', () => {
     expect(response.category_name).toBe(data.category_name);
     expect(response).toHaveProperty('description');
     expect(response.description).toBe(data.description);
+  });
+
+  it('should update data in the table successfully', async () => {
+    const categoryIdToUpdate = id;
+    const dataToUpdate = {
+      category_name: 'Footballer',
+      description: 'Que mira bobo? Que mira bobo?',
+      picture: '\\x',
+    };
+
+    const response = await client
+      .Table('categories')
+      .Update('category_id', categoryIdToUpdate, dataToUpdate);
+
+    expect(response).toEqual({ rows_affected: 1 });
   });
 });
