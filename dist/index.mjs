@@ -1,5 +1,5 @@
 /*!
- * prest-client v0.0.4
+ * prest-client v0.0.5
  * (c) pgEdge
  * Released under the MIT License.
  */
@@ -158,6 +158,24 @@ var PrestApiClient = /** @class */ (function () {
                         case 3:
                             error_1 = _a.sent();
                             throw new Error("Failed to fetch data from ".concat(tableName, ": ").concat(error_1.message));
+                        case 4: return [2 /*return*/];
+                    }
+                });
+            }); },
+            Show: function () { return __awaiter(_this, void 0, void 0, function () {
+                var response, error_2;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            _a.trys.push([0, 3, , 4]);
+                            return [4 /*yield*/, this.client.get("".concat(this.options.base_url, "/show/").concat(this.database, "/").concat(schemaName, "/").concat(tableName))];
+                        case 1:
+                            response = _a.sent();
+                            return [4 /*yield*/, response.json()];
+                        case 2: return [2 /*return*/, _a.sent()];
+                        case 3:
+                            error_2 = _a.sent();
+                            throw new Error("Failed to show data for ".concat(tableName, ": ").concat(error_2.message));
                         case 4: return [2 /*return*/];
                     }
                 });
