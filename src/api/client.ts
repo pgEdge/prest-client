@@ -53,6 +53,50 @@ class ChainedQuery {
     return this;
   }
 
+  PageSize(pageSize: number): ChainedQuery {
+    this.chainedOperations.push(stringify({ _page_size: pageSize }));
+    return this;
+  }
+
+  Select(...fields: string[]): ChainedQuery {
+    this.chainedOperations.push(stringify({ _select: fields.join(',') }));
+    return this;
+  }
+
+  Count(field?: string): ChainedQuery {
+    const fieldValue = field ? field : '*';
+    this.chainedOperations.push(stringify({ _count: fieldValue }));
+    return this;
+  }
+
+  CountFirst(countFirst: boolean = true): ChainedQuery {
+    this.chainedOperations.push(stringify({ _count_first: countFirst }));
+    return this;
+  }
+
+  Distinct(distinct: boolean = true): ChainedQuery {
+    this.chainedOperations.push(stringify({ _distinct: distinct }));
+    return this;
+  }
+
+  Order(...fields: string[]): ChainedQuery {
+    const orderFields = fields.map((field) =>
+      field.startsWith('-') ? field : `+${field}`,
+    );
+    this.chainedOperations.push(stringify({ _order: orderFields.join(',') }));
+    return this;
+  }
+
+  GroupBy(...fields: string[]): ChainedQuery {
+    this.chainedOperations.push(stringify({ _groupby: fields.join(',') }));
+    return this;
+  }
+
+  FilterEqual(field: string, value: any): ChainedQuery {
+    this.chainedOperations.push(`${field}=${encodeURIComponent(value)}`);
+    return this;
+  }
+
   /**
    * Executes the chained query operations and returns the result.
    *
@@ -71,7 +115,7 @@ class ChainedQuery {
 
     try {
       const httpClientMethod = this.client.getHttpClientMethod(this.reqType);
-      const response = await httpClientMethod(chainedUrl, {});
+      const response = await httpClientMethod(chainedUrl, this.body);
 
       return response.json();
     } catch (error: any) {
@@ -275,7 +319,7 @@ export class PrestApiClient {
      * // Inserts a new row into the 'user' table.
      * // Executes POST `/:database/:schema/:table`.
      */
-    Insert: (data: any) => Promise<any>;
+    Insert: (data: any) => ChainedQuery;
 
     /**
      * Updates data in the specified table based on the provided field and value.
@@ -299,7 +343,7 @@ export class PrestApiClient {
      * // Updates data in the 'user' table where 'user_id' equals 'userIdToUpdate'.
      * // Executes PUT `/:database/:schema/:table?field=value`.
      */
-    Update: (field: string, value: any, data: any) => Promise<any>;
+    Update: (data: any) => ChainedQuery;
 
     /**
      * Deletes data from the specified table based on the provided field and value.
@@ -317,7 +361,7 @@ export class PrestApiClient {
      * // Deletes data from the 'user' table where 'user_id' equals 'userIdToDelete'.
      * // Executes DELETE `/:database/:schema/:table?field=value`.
      */
-    Delete: (field: string, value: any) => Promise<any>;
+    Delete: () => ChainedQuery;
   } {
     if (!this.client) {
       throw new Error('Client not initialized');
@@ -344,40 +388,17 @@ export class PrestApiClient {
         const baseUrl = `${this.base_url}/show/${this.database}/${schemaName}/${tableName}`;
         return new ChainedQuery(this, baseUrl, 'get', null);
       },
-      Insert: async (data: any) => {
-        try {
-          const response = await this.client!.post(
-            `${this.base_url}/${this.database}/${schemaName}/${tableName}`,
-            data,
-          );
-          return await response.json();
-        } catch (error: any) {
-          throw new Error(
-            `Failed to insert data into ${tableName}: ${error.message}`,
-          );
-        }
+      Insert: (data: any): ChainedQuery => {
+        const baseUrl = `${this.base_url}/${this.database}/${schemaName}/${tableName}`;
+        return new ChainedQuery(this, baseUrl, 'post', data);
       },
-      Update: async (field: string, value: any, data: any) => {
-        try {
-          const url = `${this.base_url}/${this.database}/${schemaName}/${tableName}?${field}=${value}`;
-          const response = await this.client!.put(url, data);
-          return await response.json();
-        } catch (error: any) {
-          throw new Error(
-            `Failed to update data in ${tableName}: ${error.message}`,
-          );
-        }
+      Update: (data: any): ChainedQuery => {
+        const baseUrl = `${this.base_url}/${this.database}/${schemaName}/${tableName}`;
+        return new ChainedQuery(this, baseUrl, 'put', data);
       },
-      Delete: async (field: string, value: any) => {
-        try {
-          const url = `${this.base_url}/${this.database}/${schemaName}/${tableName}?${field}=${value}`;
-          const response = await this.client!.delete(url);
-          return await response.json();
-        } catch (error: any) {
-          throw new Error(
-            `Failed to delete data in ${tableName}: ${error.message}`,
-          );
-        }
+      Delete: (): ChainedQuery => {
+        const baseUrl = `${this.base_url}/${this.database}/${schemaName}/${tableName}`;
+        return new ChainedQuery(this, baseUrl, 'delete', null);
       },
     };
   }

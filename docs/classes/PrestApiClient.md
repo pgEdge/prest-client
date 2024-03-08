@@ -28,6 +28,7 @@ PrestApiClient
 
 - [Table](PrestApiClient.md#table)
 - [createClient](PrestApiClient.md#createclient)
+- [getHttpClientMethod](PrestApiClient.md#gethttpclientmethod)
 
 ## Constructors
 
@@ -49,7 +50,7 @@ Creates a new Prest API client with the provided options.
 
 #### Defined in
 
-[api/client.ts:58](https://github.com/pgEdge/prest-client/blob/70cbce0/src/api/client.ts#L58)
+[api/client.ts:156](https://github.com/pgEdge/prest-client/blob/6ca059a/src/api/client.ts#L156)
 
 ## Properties
 
@@ -61,7 +62,7 @@ The underlying HTTP client for making requests to the Prest API.
 
 #### Defined in
 
-[api/client.ts:39](https://github.com/pgEdge/prest-client/blob/70cbce0/src/api/client.ts#L39)
+[api/client.ts:137](https://github.com/pgEdge/prest-client/blob/6ca059a/src/api/client.ts#L137)
 
 ___
 
@@ -73,7 +74,7 @@ The options used to configure the client.
 
 #### Defined in
 
-[api/client.ts:51](https://github.com/pgEdge/prest-client/blob/70cbce0/src/api/client.ts#L51)
+[api/client.ts:149](https://github.com/pgEdge/prest-client/blob/6ca059a/src/api/client.ts#L149)
 
 ## Accessors
 
@@ -89,7 +90,7 @@ Gets the base URL of the Prest API endpoint to which the client is connected.
 
 #### Defined in
 
-[api/client.ts:332](https://github.com/pgEdge/prest-client/blob/70cbce0/src/api/client.ts#L332)
+[api/client.ts:416](https://github.com/pgEdge/prest-client/blob/6ca059a/src/api/client.ts#L416)
 
 ___
 
@@ -105,7 +106,7 @@ Gets the name of the database to which the client is connected.
 
 #### Defined in
 
-[api/client.ts:325](https://github.com/pgEdge/prest-client/blob/70cbce0/src/api/client.ts#L325)
+[api/client.ts:409](https://github.com/pgEdge/prest-client/blob/6ca059a/src/api/client.ts#L409)
 
 ## Methods
 
@@ -129,15 +130,15 @@ An object with methods for interacting with the table.
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `Delete` | (`field`: `string`, `value`: `any`) => `Promise`\<`any`\> | Deletes data from the specified table based on the provided field and value. **`Throws`** An error if deleting data fails. **`Example`** ```ts const response = await client.Table('user').Delete( 'user_id', // Field to filter by userIdToDelete // Value of the field to filter by ); // Deletes data from the 'user' table where 'user_id' equals 'userIdToDelete'. // Executes DELETE `/:database/:schema/:table?field=value`. ``` |
-| `Insert` | (`data`: `any`) => `Promise`\<`any`\> | Inserts data into the specified table. **`Throws`** An error if inserting data fails. **`Example`** ```ts const response = await client.Table('user').Insert({ user_name: 'Ronaldo', description: 'Siuuu!!!', picture: '\\x', }); // Inserts a new row into the 'user' table. // Executes POST `/:database/:schema/:table`. ``` |
-| `List` | () => `Promise`\<`any`\> | Retrieves the structure of the specified table. **`Throws`** An error if fetching the table structure fails. **`Example`** ```ts const response = await client.Table('user').List(); // Queries the rows of the 'user' table. Public schema is used by default. // Executes GET `/:database/:schema/:table`. ``` **`Example`** ```ts const response = await client.Table('private.user').List(); // Retrieves the rows of the 'user' table in the 'private' schema. // Executes GET `/:database/:schema/:table`. ``` **`Example`** ```ts const response = await client.Table('public.').List(); // Retrieves a list of tables in the 'public' schema. // Executes GET `/:database/:schema`. // Note: The dot at the end is to ignore the table name. ``` |
-| `Show` | () => `Promise`\<`any`\> | Retrieves data from the specified table. **`Throws`** An error if fetching data from the table fails. **`Example`** ```ts const response = await client.Table('user').Show(); // Retrieves data from the 'user' table. // Executes GET `/show/:database/:schema/:table`. ``` |
-| `Update` | (`field`: `string`, `value`: `any`, `data`: `any`) => `Promise`\<`any`\> | Updates data in the specified table based on the provided field and value. **`Throws`** An error if updating data fails. **`Example`** ```ts const response = await client.Table('user').Update( 'user_id', // Field to filter by userIdToUpdate, // Value of the field to filter by { user_name: 'NewName', description: 'Updated description', picture: '\\x', } ); // Updates data in the 'user' table where 'user_id' equals 'userIdToUpdate'. // Executes PUT `/:database/:schema/:table?field=value`. ``` |
+| `Delete` | () => `ChainedQuery` | Deletes data from the specified table based on the provided field and value. **`Throws`** An error if deleting data fails. **`Example`** ```ts const response = await client.Table('user').Delete( 'user_id', // Field to filter by userIdToDelete // Value of the field to filter by ); // Deletes data from the 'user' table where 'user_id' equals 'userIdToDelete'. // Executes DELETE `/:database/:schema/:table?field=value`. ``` |
+| `Insert` | (`data`: `any`) => `ChainedQuery` | Inserts data into the specified table. **`Throws`** An error if inserting data fails. **`Example`** ```ts const response = await client.Table('user').Insert({ user_name: 'Ronaldo', description: 'Siuuu!!!', picture: '\\x', }); // Inserts a new row into the 'user' table. // Executes POST `/:database/:schema/:table`. ``` |
+| `List` | () => `ChainedQuery` | Retrieves the structure of the specified table. **`Throws`** An error if fetching the table structure fails. **`Example`** ```ts const response = await client.Table('user').List(); // Queries the rows of the 'user' table. Public schema is used by default. // Executes GET `/:database/:schema/:table`. ``` **`Example`** ```ts const response = await client.Table('private.user').List(); // Retrieves the rows of the 'user' table in the 'private' schema. // Executes GET `/:database/:schema/:table`. ``` **`Example`** ```ts const response = await client.Table('public.').List(); // Retrieves a list of tables in the 'public' schema. // Executes GET `/:database/:schema`. // Note: The dot at the end is to ignore the table name. ``` |
+| `Show` | () => `ChainedQuery` | Retrieves data from the specified table. **`Throws`** An error if fetching data from the table fails. **`Example`** ```ts const response = await client.Table('user').Show(); // Retrieves data from the 'user' table. // Executes GET `/show/:database/:schema/:table`. ``` |
+| `Update` | (`data`: `any`) => `ChainedQuery` | Updates data in the specified table based on the provided field and value. **`Throws`** An error if updating data fails. **`Example`** ```ts const response = await client.Table('user').Update( 'user_id', // Field to filter by userIdToUpdate, // Value of the field to filter by { user_name: 'NewName', description: 'Updated description', picture: '\\x', } ); // Updates data in the 'user' table where 'user_id' equals 'userIdToUpdate'. // Executes PUT `/:database/:schema/:table?field=value`. ``` |
 
 #### Defined in
 
-[api/client.ts:144](https://github.com/pgEdge/prest-client/blob/70cbce0/src/api/client.ts#L144)
+[api/client.ts:268](https://github.com/pgEdge/prest-client/blob/6ca059a/src/api/client.ts#L268)
 
 ___
 
@@ -153,4 +154,45 @@ Creates the underlying HTTP client with the necessary authentication headers.
 
 #### Defined in
 
-[api/client.ts:66](https://github.com/pgEdge/prest-client/blob/70cbce0/src/api/client.ts#L66)
+[api/client.ts:164](https://github.com/pgEdge/prest-client/blob/6ca059a/src/api/client.ts#L164)
+
+___
+
+### getHttpClientMethod
+
+▸ **getHttpClientMethod**(`method`): (`url`: `string`, `body`: `any`) => `Promise`\<`Response`\>
+
+Returns the appropriate HTTP client method for making the API request.
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `method` | ``"get"`` \| ``"post"`` \| ``"put"`` \| ``"delete"`` | The HTTP method to use ('get', 'post', 'put', or 'delete'). |
+
+#### Returns
+
+`fn`
+
+The corresponding HTTP client method.
+
+▸ (`url`, `body`): `Promise`\<`Response`\>
+
+##### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `url` | `string` |
+| `body` | `any` |
+
+##### Returns
+
+`Promise`\<`Response`\>
+
+**`Throws`**
+
+An error if the client is not initialized or the method is invalid.
+
+#### Defined in
+
+[api/client.ts:243](https://github.com/pgEdge/prest-client/blob/6ca059a/src/api/client.ts#L243)

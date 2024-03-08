@@ -22,6 +22,29 @@ export interface PrestApiClientOptions {
      */
     database: string;
 }
+declare class ChainedQuery {
+    private client;
+    private baseUrl;
+    private reqType;
+    private body;
+    private chainedOperations;
+    constructor(client: PrestApiClient, baseUrl: string, reqType: 'get' | 'post' | 'put' | 'delete', body: any);
+    Page(pageNumber: number): ChainedQuery;
+    PageSize(pageSize: number): ChainedQuery;
+    Select(...fields: string[]): ChainedQuery;
+    Count(field?: string): ChainedQuery;
+    CountFirst(countFirst?: boolean): ChainedQuery;
+    Distinct(distinct?: boolean): ChainedQuery;
+    Order(...fields: string[]): ChainedQuery;
+    GroupBy(...fields: string[]): ChainedQuery;
+    FilterEqual(field: string, value: any): ChainedQuery;
+    /**
+     * Executes the chained query operations and returns the result.
+     *
+     * @returns A promise that resolves with the query result.
+     */
+    execute(): Promise<any>;
+}
 /**
  * A client for interacting with a Prest API.
  *
@@ -47,6 +70,14 @@ export declare class PrestApiClient {
      * Creates the underlying HTTP client with the necessary authentication headers.
      */
     private createClient;
+    /**
+     * Returns the appropriate HTTP client method for making the API request.
+     *
+     * @param method - The HTTP method to use ('get', 'post', 'put', or 'delete').
+     * @returns The corresponding HTTP client method.
+     * @throws An error if the client is not initialized or the method is invalid.
+     */
+    getHttpClientMethod(method: 'get' | 'post' | 'put' | 'delete'): (url: string, body: any) => Promise<Response>;
     /**
      * Returns an object for interacting with a specific table in the database.
      *
@@ -76,7 +107,7 @@ export declare class PrestApiClient {
          * // Executes GET `/:database/:schema`.
          * // Note: The dot at the end is to ignore the table name.
          */
-        List: () => Promise<any>;
+        List: () => ChainedQuery;
         /**
          * Retrieves data from the specified table.
          *
@@ -88,7 +119,7 @@ export declare class PrestApiClient {
          * // Retrieves data from the 'user' table.
          * // Executes GET `/show/:database/:schema/:table`.
          */
-        Show: () => Promise<any>;
+        Show: () => ChainedQuery;
         /**
          * Inserts data into the specified table.
          *
@@ -105,7 +136,7 @@ export declare class PrestApiClient {
          * // Inserts a new row into the 'user' table.
          * // Executes POST `/:database/:schema/:table`.
          */
-        Insert: (data: any) => Promise<any>;
+        Insert: (data: any) => ChainedQuery;
         /**
          * Updates data in the specified table based on the provided field and value.
          *
@@ -128,7 +159,7 @@ export declare class PrestApiClient {
          * // Updates data in the 'user' table where 'user_id' equals 'userIdToUpdate'.
          * // Executes PUT `/:database/:schema/:table?field=value`.
          */
-        Update: (field: string, value: any, data: any) => Promise<any>;
+        Update: (data: any) => ChainedQuery;
         /**
          * Deletes data from the specified table based on the provided field and value.
          *
@@ -145,7 +176,7 @@ export declare class PrestApiClient {
          * // Deletes data from the 'user' table where 'user_id' equals 'userIdToDelete'.
          * // Executes DELETE `/:database/:schema/:table?field=value`.
          */
-        Delete: (field: string, value: any) => Promise<any>;
+        Delete: () => ChainedQuery;
     };
     /**
      * Gets the name of the database to which the client is connected.
@@ -156,4 +187,5 @@ export declare class PrestApiClient {
      */
     get base_url(): string;
 }
+export {};
 //# sourceMappingURL=client.d.ts.map

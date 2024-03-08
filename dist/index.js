@@ -1,10 +1,12 @@
 /*!
- * prest-client v0.0.5
+ * prest-client v0.0.6
  * (c) pgEdge
  * Released under the MIT License.
  */
 
 'use strict';
+
+var querystring = require('querystring');
 
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -66,6 +68,104 @@ typeof SuppressedError === "function" ? SuppressedError : function (error, suppr
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 };
 
+var ChainedQuery = /** @class */ (function () {
+    function ChainedQuery(client, baseUrl, reqType, body) {
+        this.client = client;
+        this.baseUrl = baseUrl;
+        this.reqType = reqType;
+        this.body = body;
+        this.chainedOperations = [];
+    }
+    ChainedQuery.prototype.Page = function (pageNumber) {
+        this.chainedOperations.push(querystring.stringify({ _page: pageNumber }));
+        return this;
+    };
+    ChainedQuery.prototype.PageSize = function (pageSize) {
+        this.chainedOperations.push(querystring.stringify({ _page_size: pageSize }));
+        return this;
+    };
+    ChainedQuery.prototype.Select = function () {
+        var fields = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            fields[_i] = arguments[_i];
+        }
+        this.chainedOperations.push(querystring.stringify({ _select: fields.join(',') }));
+        return this;
+    };
+    ChainedQuery.prototype.Count = function (field) {
+        var fieldValue = field ? field : '*';
+        this.chainedOperations.push(querystring.stringify({ _count: fieldValue }));
+        return this;
+    };
+    ChainedQuery.prototype.CountFirst = function (countFirst) {
+        if (countFirst === void 0) { countFirst = true; }
+        this.chainedOperations.push(querystring.stringify({ _count_first: countFirst }));
+        return this;
+    };
+    ChainedQuery.prototype.Distinct = function (distinct) {
+        if (distinct === void 0) { distinct = true; }
+        this.chainedOperations.push(querystring.stringify({ _distinct: distinct }));
+        return this;
+    };
+    ChainedQuery.prototype.Order = function () {
+        var fields = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            fields[_i] = arguments[_i];
+        }
+        var orderFields = fields.map(function (field) {
+            return field.startsWith('-') ? field : "+".concat(field);
+        });
+        this.chainedOperations.push(querystring.stringify({ _order: orderFields.join(',') }));
+        return this;
+    };
+    ChainedQuery.prototype.GroupBy = function () {
+        var fields = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            fields[_i] = arguments[_i];
+        }
+        this.chainedOperations.push(querystring.stringify({ _groupby: fields.join(',') }));
+        return this;
+    };
+    ChainedQuery.prototype.FilterEqual = function (field, value) {
+        this.chainedOperations.push("".concat(field, "=").concat(encodeURIComponent(value)));
+        return this;
+    };
+    /**
+     * Executes the chained query operations and returns the result.
+     *
+     * @returns A promise that resolves with the query result.
+     */
+    ChainedQuery.prototype.execute = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var chainedUrl, i, httpClientMethod, response, error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        chainedUrl = this.baseUrl;
+                        if (this.chainedOperations.length > 0) {
+                            chainedUrl += "?".concat(this.chainedOperations[0]);
+                            for (i = 1; i < this.chainedOperations.length; i++) {
+                                chainedUrl += "&".concat(this.chainedOperations[i]);
+                            }
+                        }
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        httpClientMethod = this.client.getHttpClientMethod(this.reqType);
+                        return [4 /*yield*/, httpClientMethod(chainedUrl, this.body)];
+                    case 2:
+                        response = _a.sent();
+                        return [2 /*return*/, response.json()];
+                    case 3:
+                        error_1 = _a.sent();
+                        throw new Error("Failed to make API request: ".concat(error_1.message));
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return ChainedQuery;
+}());
 /**
  * A client for interacting with a Prest API.
  *
@@ -184,6 +284,30 @@ var PrestApiClient = /** @class */ (function () {
         });
     };
     /**
+     * Returns the appropriate HTTP client method for making the API request.
+     *
+     * @param method - The HTTP method to use ('get', 'post', 'put', or 'delete').
+     * @returns The corresponding HTTP client method.
+     * @throws An error if the client is not initialized or the method is invalid.
+     */
+    PrestApiClient.prototype.getHttpClientMethod = function (method) {
+        if (!this.client) {
+            throw new Error('Client not initialized');
+        }
+        switch (method) {
+            case 'get':
+                return this.client.get;
+            case 'post':
+                return this.client.post;
+            case 'put':
+                return this.client.put;
+            case 'delete':
+                return this.client.delete;
+            default:
+                throw new Error('Invalid HTTP method');
+        }
+    };
+    /**
      * Returns an object for interacting with a specific table in the database.
      *
      * @param tableName - The name of the table.
@@ -197,108 +321,33 @@ var PrestApiClient = /** @class */ (function () {
         if (!tableName) {
             throw new Error('Table name is required');
         }
-        var schemaName;
+        var schemaName = 'public';
         if (tableName.includes('.')) {
             var parts = tableName.split('.');
-            schemaName = parts[0];
+            schemaName = parts[0] || schemaName;
             tableName = parts[1];
         }
-        else {
-            schemaName = 'public';
-        }
         return {
-            List: function () { return __awaiter(_this, void 0, void 0, function () {
-                var response, error_1;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            _a.trys.push([0, 3, , 4]);
-                            return [4 /*yield*/, this.client.get("".concat(this.base_url, "/").concat(this.database, "/").concat(schemaName, "/").concat(tableName))];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                        case 3:
-                            error_1 = _a.sent();
-                            throw new Error("Failed to fetch data from ".concat(tableName, ": ").concat(error_1.message));
-                        case 4: return [2 /*return*/];
-                    }
-                });
-            }); },
-            Show: function () { return __awaiter(_this, void 0, void 0, function () {
-                var response, error_2;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            _a.trys.push([0, 3, , 4]);
-                            return [4 /*yield*/, this.client.get("".concat(this.base_url, "/show/").concat(this.database, "/").concat(schemaName, "/").concat(tableName))];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                        case 3:
-                            error_2 = _a.sent();
-                            throw new Error("Failed to show data for ".concat(tableName, ": ").concat(error_2.message));
-                        case 4: return [2 /*return*/];
-                    }
-                });
-            }); },
-            Insert: function (data) { return __awaiter(_this, void 0, void 0, function () {
-                var response, error_3;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            _a.trys.push([0, 3, , 4]);
-                            return [4 /*yield*/, this.client.post("".concat(this.base_url, "/").concat(this.database, "/").concat(schemaName, "/").concat(tableName), data)];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                        case 3:
-                            error_3 = _a.sent();
-                            throw new Error("Failed to insert data into ".concat(tableName, ": ").concat(error_3.message));
-                        case 4: return [2 /*return*/];
-                    }
-                });
-            }); },
-            Update: function (field, value, data) { return __awaiter(_this, void 0, void 0, function () {
-                var url, response, error_4;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            _a.trys.push([0, 3, , 4]);
-                            url = "".concat(this.base_url, "/").concat(this.database, "/").concat(schemaName, "/").concat(tableName, "?").concat(field, "=").concat(value);
-                            return [4 /*yield*/, this.client.put(url, data)];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                        case 3:
-                            error_4 = _a.sent();
-                            throw new Error("Failed to update data in ".concat(tableName, ": ").concat(error_4.message));
-                        case 4: return [2 /*return*/];
-                    }
-                });
-            }); },
-            Delete: function (field, value) { return __awaiter(_this, void 0, void 0, function () {
-                var url, response, error_5;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            _a.trys.push([0, 3, , 4]);
-                            url = "".concat(this.base_url, "/").concat(this.database, "/").concat(schemaName, "/").concat(tableName, "?").concat(field, "=").concat(value);
-                            return [4 /*yield*/, this.client.delete(url)];
-                        case 1:
-                            response = _a.sent();
-                            return [4 /*yield*/, response.json()];
-                        case 2: return [2 /*return*/, _a.sent()];
-                        case 3:
-                            error_5 = _a.sent();
-                            throw new Error("Failed to delete data in ".concat(tableName, ": ").concat(error_5.message));
-                        case 4: return [2 /*return*/];
-                    }
-                });
-            }); },
+            List: function () {
+                var baseUrl = "".concat(_this.base_url, "/").concat(_this.database, "/").concat(schemaName, "/").concat(tableName);
+                return new ChainedQuery(_this, baseUrl, 'get', null);
+            },
+            Show: function () {
+                var baseUrl = "".concat(_this.base_url, "/show/").concat(_this.database, "/").concat(schemaName, "/").concat(tableName);
+                return new ChainedQuery(_this, baseUrl, 'get', null);
+            },
+            Insert: function (data) {
+                var baseUrl = "".concat(_this.base_url, "/").concat(_this.database, "/").concat(schemaName, "/").concat(tableName);
+                return new ChainedQuery(_this, baseUrl, 'post', data);
+            },
+            Update: function (data) {
+                var baseUrl = "".concat(_this.base_url, "/").concat(_this.database, "/").concat(schemaName, "/").concat(tableName);
+                return new ChainedQuery(_this, baseUrl, 'put', data);
+            },
+            Delete: function () {
+                var baseUrl = "".concat(_this.base_url, "/").concat(_this.database, "/").concat(schemaName, "/").concat(tableName);
+                return new ChainedQuery(_this, baseUrl, 'delete', null);
+            },
         };
     };
     Object.defineProperty(PrestApiClient.prototype, "database", {

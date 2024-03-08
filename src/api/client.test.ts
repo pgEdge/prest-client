@@ -75,7 +75,7 @@ describe('PrestApiClient', () => {
       picture: '\\x',
     };
 
-    const response = await client.Table('categories').Insert(data);
+    const response = await client.Table('categories').Insert(data).execute();
 
     expect(response).toHaveProperty('category_id');
     expect(typeof response.category_id).toBe('number');
@@ -95,7 +95,9 @@ describe('PrestApiClient', () => {
 
     const response = await client
       .Table('categories')
-      .Update('category_id', categoryIdToUpdate, dataToUpdate);
+      .Update(dataToUpdate)
+      .FilterEqual('category_id', categoryIdToUpdate)
+      .execute();
 
     expect(response).toEqual({ rows_affected: 1 });
   });
@@ -105,7 +107,9 @@ describe('PrestApiClient', () => {
 
     const response = await client
       .Table('categories')
-      .Delete('category_id', categoryIdToDelete);
+      .Delete()
+      .FilterEqual('category_id', categoryIdToDelete)
+      .execute();
 
     expect(response).toEqual({ rows_affected: 1 });
   });
