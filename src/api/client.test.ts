@@ -18,25 +18,29 @@ describe('PrestApiClient', () => {
   });
 
   it('should fetch categories successfully', async () => {
-    const response = await client.Table('categories').List();
+    const response = await client.Table('categories').List().execute();
+    console.log(response);
     expect(Array.isArray(response)).toBeTruthy();
     expect(response.length).toBeGreaterThan(0);
   });
 
   it('should fetch categories from public schema successfully', async () => {
-    const response = await client.Table('public.categories').List();
+    const response = await client.Table('public.categories').List().execute();
+    console.log(response);
     expect(Array.isArray(response)).toBeTruthy();
     expect(response.length).toBeGreaterThan(0);
   });
 
   it('should retrieve a list of tables in a schema', async () => {
-    const response = await client.Table('public.').List();
+    const response = await client.Table('public.').List().execute();
+    console.log(response);
     expect(Array.isArray(response)).toBeTruthy();
     expect(response.length).toBeGreaterThan(0);
   });
 
   it('should fetch information about a table successfully using Show method', async () => {
-    const response = await client.Table('categories').Show();
+    const response = await client.Table('categories').Show().execute();
+    console.log(response);
     expect(Array.isArray(response)).toBeTruthy();
     expect(response.length).toBeGreaterThan(0);
 

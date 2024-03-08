@@ -1,3 +1,5 @@
+import { stringify } from 'querystring';
+
 /**
  * Options for creating a Prest API client.
  *
@@ -24,6 +26,58 @@ export interface PrestApiClientOptions {
    * The name of the database to connect to.
    */
   database: string;
+}
+
+class ChainedQuery {
+  private client: PrestApiClient;
+  private baseUrl: string;
+  private reqType: 'get' | 'post' | 'put' | 'delete';
+  private body: any;
+  private chainedOperations: string[];
+
+  constructor(
+    client: PrestApiClient,
+    baseUrl: string,
+    reqType: 'get' | 'post' | 'put' | 'delete',
+    body: any,
+  ) {
+    this.client = client;
+    this.baseUrl = baseUrl;
+    this.reqType = reqType;
+    this.body = body;
+    this.chainedOperations = [];
+  }
+
+  Page(pageNumber: number): ChainedQuery {
+    this.chainedOperations.push(stringify({ _page: pageNumber }));
+    return this;
+  }
+
+  /**
+   * Executes the chained query operations and returns the result.
+   *
+   * @returns A promise that resolves with the query result.
+   */
+  async execute(): Promise<any> {
+    let chainedUrl = this.baseUrl;
+
+    if (this.chainedOperations.length > 0) {
+      chainedUrl += `?${this.chainedOperations[0]}`;
+
+      for (let i = 1; i < this.chainedOperations.length; i++) {
+        chainedUrl += `&${this.chainedOperations[i]}`;
+      }
+    }
+
+    try {
+      const httpClientMethod = this.client.getHttpClientMethod(this.reqType);
+      const response = await httpClientMethod(chainedUrl, {});
+
+      return response.json();
+    } catch (error: any) {
+      throw new Error(`Failed to make API request: ${error.message}`);
+    }
+  }
 }
 
 /**
@@ -136,6 +190,32 @@ export class PrestApiClient {
   }
 
   /**
+   * Returns the appropriate HTTP client method for making the API request.
+   *
+   * @param method - The HTTP method to use ('get', 'post', 'put', or 'delete').
+   * @returns The corresponding HTTP client method.
+   * @throws An error if the client is not initialized or the method is invalid.
+   */
+  getHttpClientMethod(method: 'get' | 'post' | 'put' | 'delete') {
+    if (!this.client) {
+      throw new Error('Client not initialized');
+    }
+
+    switch (method) {
+      case 'get':
+        return this.client.get;
+      case 'post':
+        return this.client.post;
+      case 'put':
+        return this.client.put;
+      case 'delete':
+        return this.client.delete;
+      default:
+        throw new Error('Invalid HTTP method');
+    }
+  }
+
+  /**
    * Returns an object for interacting with a specific table in the database.
    *
    * @param tableName - The name of the table.
@@ -164,7 +244,7 @@ export class PrestApiClient {
      * // Executes GET `/:database/:schema`.
      * // Note: The dot at the end is to ignore the table name.
      */
-    List: () => Promise<any>;
+    List: () => ChainedQuery;
 
     /**
      * Retrieves data from the specified table.
@@ -177,7 +257,7 @@ export class PrestApiClient {
      * // Retrieves data from the 'user' table.
      * // Executes GET `/show/:database/:schema/:table`.
      */
-    Show: () => Promise<any>;
+    Show: () => ChainedQuery;
 
     /**
      * Inserts data into the specified table.
@@ -247,39 +327,22 @@ export class PrestApiClient {
       throw new Error('Table name is required');
     }
 
-    let schemaName: string | undefined;
+    let schemaName: string = 'public';
     if (tableName.includes('.')) {
       const parts = tableName.split('.');
-      schemaName = parts[0];
+      schemaName = parts[0] || schemaName;
       tableName = parts[1];
-    } else {
-      schemaName = 'public';
     }
 
     return {
-      List: async () => {
-        try {
-          const response = await this.client!.get(
-            `${this.base_url}/${this.database}/${schemaName}/${tableName}`,
-          );
-          return await response.json();
-        } catch (error: any) {
-          throw new Error(
-            `Failed to fetch data from ${tableName}: ${error.message}`,
-          );
-        }
+      List: (): ChainedQuery => {
+        const baseUrl = `${this.base_url}/${this.database}/${schemaName}/${tableName}`;
+        return new ChainedQuery(this, baseUrl, 'get', null);
       },
-      Show: async () => {
-        try {
-          const response = await this.client!.get(
-            `${this.base_url}/show/${this.database}/${schemaName}/${tableName}`,
-          );
-          return await response.json();
-        } catch (error: any) {
-          throw new Error(
-            `Failed to show data for ${tableName}: ${error.message}`,
-          );
-        }
+
+      Show: (): ChainedQuery => {
+        const baseUrl = `${this.base_url}/show/${this.database}/${schemaName}/${tableName}`;
+        return new ChainedQuery(this, baseUrl, 'get', null);
       },
       Insert: async (data: any) => {
         try {
