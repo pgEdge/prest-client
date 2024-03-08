@@ -33,6 +33,8 @@ class ChainedQuery {
   private baseUrl: string;
   private reqType: 'get' | 'post' | 'put' | 'delete';
   private body: any;
+  private renderer: 'json' | 'xml' = 'json';
+  private sqlFunctions: string[] = [];
   private chainedOperations: string[];
 
   constructor(
@@ -48,6 +50,7 @@ class ChainedQuery {
     this.chainedOperations = [];
   }
 
+  //filter methods start
   Page(pageNumber: number): ChainedQuery {
     this.chainedOperations.push(stringify({ _page: pageNumber }));
     return this;
@@ -74,6 +77,12 @@ class ChainedQuery {
     return this;
   }
 
+  Renderer(renderer: 'json' | 'xml'): ChainedQuery {
+    this.chainedOperations.push(stringify({ _renderer: renderer }));
+    this.renderer = renderer;
+    return this;
+  }
+
   Distinct(distinct: boolean = true): ChainedQuery {
     this.chainedOperations.push(stringify({ _distinct: distinct }));
     return this;
@@ -81,7 +90,7 @@ class ChainedQuery {
 
   Order(...fields: string[]): ChainedQuery {
     const orderFields = fields.map((field) =>
-      field.startsWith('-') ? field : `+${field}`,
+      field.startsWith('-') ? field : `${field}`,
     );
     this.chainedOperations.push(stringify({ _order: orderFields.join(',') }));
     return this;
@@ -96,6 +105,16 @@ class ChainedQuery {
     this.chainedOperations.push(`${field}=${encodeURIComponent(value)}`);
     return this;
   }
+  //filter methods end
+
+  // SQLFunction(
+  //   functionName: 'sum' | 'avg' | 'max' | 'min' | 'stddev' | 'variance',
+  //   field: string,
+  // ): ChainedQuery {
+  //   const functionParam = `${functionName}:${field}`;
+  //   this.sqlFunctions.push(functionParam);
+  //   return this;
+  // }
 
   /**
    * Executes the chained query operations and returns the result.
@@ -113,11 +132,20 @@ class ChainedQuery {
       }
     }
 
+    if (this.sqlFunctions.length > 0) {
+      chainedUrl += `&_select=${this.sqlFunctions.join(',')}`;
+    }
+
     try {
+      console.log(chainedUrl);
       const httpClientMethod = this.client.getHttpClientMethod(this.reqType);
       const response = await httpClientMethod(chainedUrl, this.body);
 
-      return response.json();
+      if (this.renderer === 'json') {
+        return response.json();
+      } else {
+        return response.text();
+      }
     } catch (error: any) {
       throw new Error(`Failed to make API request: ${error.message}`);
     }
