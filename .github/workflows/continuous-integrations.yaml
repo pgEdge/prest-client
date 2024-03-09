@@ -2,7 +2,7 @@ name: 'Continuous Integrations'
 
 on:
   push:
-    # branches: ['main']
+    branches: ['main']
 
 jobs:
   lint:
