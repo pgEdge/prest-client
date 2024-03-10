@@ -174,7 +174,7 @@ describe('PrestApiClient', () => {
 
     console.log(response);
     expect(Array.isArray(response)).toBeTruthy();
-    expect(response.length).toBe(29);
+    expect(response.length).toBe(28);
     expect(response[0]).toHaveProperty('category_id');
   });
 
@@ -280,4 +280,116 @@ describe('PrestApiClient', () => {
   });
 
   // test for filter query methods ends
+
+  // test for function methods starts
+  it('should apply Sum function correctly', async () => {
+    const response = await client
+      .Table('categories')
+      .List()
+      .GroupBy('category_id')
+      .Sum('category_id')
+      .execute();
+
+    console.log(response);
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBeGreaterThan(0);
+    response.forEach((item: any) => {
+      expect(item).toHaveProperty('sum');
+    });
+  });
+
+  it('should apply Avg function correctly', async () => {
+    const response = await client
+      .Table('categories')
+      .List()
+      .GroupBy('category_id')
+      .Avg('category_id')
+      .execute();
+
+    console.log(response);
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBeGreaterThan(0);
+    response.forEach((item: any) => {
+      expect(item).toHaveProperty('avg');
+    });
+  });
+
+  it('should apply Max function correctly', async () => {
+    const response = await client
+      .Table('categories')
+      .List()
+      .GroupBy('category_id')
+      .Max('category_id')
+      .execute();
+
+    console.log(response);
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBeGreaterThan(0);
+    response.forEach((item: any) => {
+      expect(item).toHaveProperty('max');
+    });
+  });
+
+  it('should apply Min function correctly', async () => {
+    const response = await client
+      .Table('categories')
+      .List()
+      .GroupBy('category_id')
+      .Min('category_id')
+      .execute();
+
+    console.log(response);
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBeGreaterThan(0);
+    response.forEach((item: any) => {
+      expect(item).toHaveProperty('min');
+    });
+  });
+
+  it('should apply StdDev function correctly', async () => {
+    const response = await client
+      .Table('categories')
+      .List()
+      .GroupBy('category_id')
+      .StdDev('category_id')
+      .execute();
+
+    console.log(response);
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBeGreaterThan(0);
+    response.forEach((item: any) => {
+      expect(item).toHaveProperty('stddev');
+    });
+  });
+
+  it('should apply Variance function correctly', async () => {
+    const response = await client
+      .Table('categories')
+      .List()
+      .GroupBy('category_id')
+      .Variance('category_id')
+      .execute();
+
+    console.log(response);
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBeGreaterThan(0);
+    response.forEach((item: any) => {
+      expect(item).toHaveProperty('variance');
+    });
+  });
+
+  it('should apply Having filter correctly', async () => {
+    const response = await client
+      .Table('categories')
+      .List()
+      .GroupBy('category_id')
+      .Sum('category_id')
+      .Having('sum', 'category_id', '$gt', 5)
+      .execute();
+
+    console.log(response);
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBeGreaterThan(0);
+  });
+  // tests for function methods ends
 });

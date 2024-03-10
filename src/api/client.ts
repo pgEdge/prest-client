@@ -107,14 +107,48 @@ class ChainedQuery {
   }
   //filter methods end
 
-  // SQLFunction(
-  //   functionName: 'sum' | 'avg' | 'max' | 'min' | 'stddev' | 'variance',
-  //   field: string,
-  // ): ChainedQuery {
-  //   const functionParam = `${functionName}:${field}`;
-  //   this.sqlFunctions.push(functionParam);
-  //   return this;
-  // }
+  //function methods start
+  Sum(field: string): ChainedQuery {
+    this.sqlFunctions.push(`sum:${field}`);
+    return this;
+  }
+
+  Avg(field: string): ChainedQuery {
+    this.sqlFunctions.push(`avg:${field}`);
+    return this;
+  }
+
+  Max(field: string): ChainedQuery {
+    this.sqlFunctions.push(`max:${field}`);
+    return this;
+  }
+
+  Min(field: string): ChainedQuery {
+    this.sqlFunctions.push(`min:${field}`);
+    return this;
+  }
+
+  StdDev(field: string): ChainedQuery {
+    this.sqlFunctions.push(`stddev:${field}`);
+    return this;
+  }
+
+  Variance(field: string): ChainedQuery {
+    this.sqlFunctions.push(`variance:${field}`);
+    return this;
+  }
+
+  Having(
+    groupFunc: string,
+    field: string,
+    condition: '$eq' | '$gt' | '$lt',
+    value: any,
+  ): ChainedQuery {
+    const havingClause = `having:${groupFunc}:${field}:${condition}:${encodeURIComponent(value)}`;
+    this.chainedOperations.push(havingClause);
+    return this;
+  }
+  //function methods end
 
   /**
    * Executes the chained query operations and returns the result.
