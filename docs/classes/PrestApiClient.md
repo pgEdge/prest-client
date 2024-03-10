@@ -50,7 +50,7 @@ Creates a new Prest API client with the provided options.
 
 #### Defined in
 
-[api/client.ts:156](https://github.com/pgEdge/prest-client/blob/6ca059a/src/api/client.ts#L156)
+[api/client.ts:533](https://github.com/pgEdge/prest-client/blob/0cd2921/src/api/client.ts#L533)
 
 ## Properties
 
@@ -62,7 +62,7 @@ The underlying HTTP client for making requests to the Prest API.
 
 #### Defined in
 
-[api/client.ts:137](https://github.com/pgEdge/prest-client/blob/6ca059a/src/api/client.ts#L137)
+[api/client.ts:514](https://github.com/pgEdge/prest-client/blob/0cd2921/src/api/client.ts#L514)
 
 ___
 
@@ -74,7 +74,7 @@ The options used to configure the client.
 
 #### Defined in
 
-[api/client.ts:149](https://github.com/pgEdge/prest-client/blob/6ca059a/src/api/client.ts#L149)
+[api/client.ts:526](https://github.com/pgEdge/prest-client/blob/0cd2921/src/api/client.ts#L526)
 
 ## Accessors
 
@@ -90,7 +90,7 @@ Gets the base URL of the Prest API endpoint to which the client is connected.
 
 #### Defined in
 
-[api/client.ts:416](https://github.com/pgEdge/prest-client/blob/6ca059a/src/api/client.ts#L416)
+[api/client.ts:793](https://github.com/pgEdge/prest-client/blob/0cd2921/src/api/client.ts#L793)
 
 ___
 
@@ -106,7 +106,7 @@ Gets the name of the database to which the client is connected.
 
 #### Defined in
 
-[api/client.ts:409](https://github.com/pgEdge/prest-client/blob/6ca059a/src/api/client.ts#L409)
+[api/client.ts:786](https://github.com/pgEdge/prest-client/blob/0cd2921/src/api/client.ts#L786)
 
 ## Methods
 
@@ -138,7 +138,7 @@ An object with methods for interacting with the table.
 
 #### Defined in
 
-[api/client.ts:268](https://github.com/pgEdge/prest-client/blob/6ca059a/src/api/client.ts#L268)
+[api/client.ts:645](https://github.com/pgEdge/prest-client/blob/0cd2921/src/api/client.ts#L645)
 
 ___
 
@@ -154,7 +154,7 @@ Creates the underlying HTTP client with the necessary authentication headers.
 
 #### Defined in
 
-[api/client.ts:164](https://github.com/pgEdge/prest-client/blob/6ca059a/src/api/client.ts#L164)
+[api/client.ts:541](https://github.com/pgEdge/prest-client/blob/0cd2921/src/api/client.ts#L541)
 
 ___
 
@@ -195,4 +195,4 @@ An error if the client is not initialized or the method is invalid.
 
 #### Defined in
 
-[api/client.ts:243](https://github.com/pgEdge/prest-client/blob/6ca059a/src/api/client.ts#L243)
+[api/client.ts:620](https://github.com/pgEdge/prest-client/blob/0cd2921/src/api/client.ts#L620)
