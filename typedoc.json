@@ -1,7 +1,0 @@
-{
-  "out": "./docs",
-  "name": "Prest Client",
-  "plugin": ["typedoc-plugin-markdown"],
-  "readme": "none",
-  "tsconfig": "./tsconfig.bundle.json"
-}

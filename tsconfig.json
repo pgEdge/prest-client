@@ -1,36 +1,6 @@
 {
-  "compilerOptions": {
-    // React.js JSX settings.
-    "jsx": "react",
-    "jsxFactory": "React.createElement",
-    "jsxFragmentFactory": "React.Fragment",
-
-    // Module settings.
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "module": "ES2022",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-
-    // Strictness and quality settings.
-    "alwaysStrict": true,
-    "exactOptionalPropertyTypes": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "strict": true,
-    "verbatimModuleSyntax": true,
-
-    // Type-checking settings.
-    "lib": ["ES2020","esnext", "dom"],
-    "skipDefaultLibCheck": true,
-    "skipLibCheck": true,
-    "types": ["jest","node"]
-  },
-  "include": ["./src/**/*.ts", "./src/**/*.tsx", "src/env.config.ts"]
-}
+    "compilerOptions": {
+      "esModuleInterop": true,
+      "lib": [ "es2015", "dom" ],
+    }
+  }
