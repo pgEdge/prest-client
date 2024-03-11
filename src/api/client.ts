@@ -487,13 +487,8 @@ class ChainedQuery {
     return this;
   }
 
-  JSONbFilter(
-    field: string,
-    jsonField: string,
-    operator: string,
-    value: any,
-  ): ChainedQuery {
-    const filterClause = `${field}->>json:${jsonField}:${operator}:${encodeURIComponent(value)}`;
+  JSONbFilter(field: string, jsonField: string, value: any): ChainedQuery {
+    const filterClause = `${field}->>${jsonField}:jsonb=${encodeURIComponent(value)}`;
     this.chainedOperations.push(filterClause);
     return this;
   }

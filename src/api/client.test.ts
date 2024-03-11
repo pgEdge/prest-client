@@ -516,4 +516,45 @@ describe('PrestApiClient', () => {
       expect(item).toHaveProperty('picture');
     });
   });
+
+  it('should apply JSONbFilter correctly with JSONB data in the mock_json table', async () => {
+    const newData = {
+      tags: 1,
+      metadata: {
+        created_at: '2023-05-01T10:00:00Z',
+        updated_at: '2023-05-01T10:00:00Z',
+      },
+    };
+
+    const insertedData = await client
+      .Table('mock_json')
+      .Insert({
+        jsonb_data: JSON.stringify(newData),
+      })
+      .execute();
+
+    const response = await client
+      .Table('mock_json')
+      .List()
+      .JSONbFilter('jsonb_data', 'tags', 1)
+      .execute();
+
+    console.log(response);
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBeGreaterThan(0);
+
+    const filteredData = response.find(
+      (item: any) => item.id === insertedData.id,
+    );
+    expect(filteredData).toBeDefined();
+    expect(filteredData).toHaveProperty('jsonb_data');
+    const tags = filteredData.jsonb_data.tags;
+    expect(tags).toBe(1);
+
+    await client
+      .Table('mock_json')
+      .Delete()
+      .FilterEqual('id', insertedData.id)
+      .execute();
+  });
 });
