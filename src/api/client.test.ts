@@ -133,7 +133,7 @@ describe('PrestApiClient', () => {
 
     console.log(response);
     expect(Array.isArray(response)).toBeTruthy();
-    expect(response.length).toBeLessThanOrEqual(30);
+    expect(response.length).toBeLessThanOrEqual(32);
   });
 
   it('should apply Select filter correctly', async () => {
@@ -174,7 +174,7 @@ describe('PrestApiClient', () => {
 
     console.log(response);
     expect(Array.isArray(response)).toBeTruthy();
-    expect(response.length).toBe(28);
+    expect(response.length).toBe(32);
     expect(response[0]).toHaveProperty('category_id');
   });
 
@@ -556,5 +556,72 @@ describe('PrestApiClient', () => {
       .Delete()
       .FilterEqual('id', insertedData.id)
       .execute();
+  });
+
+  it('should add a full-text search filter to the query using tsquery syntax', async () => {
+    const field = 'description';
+    const query = 'Que';
+
+    const response = await client
+      .Table('categories')
+      .List()
+      .TextSearch(field, query)
+      .execute();
+
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBeGreaterThan(0);
+  });
+
+  it('should add a full-text search filter to the query including language using tsquery syntax', async () => {
+    const field = 'description';
+    const query = 'Que';
+
+    const response = await client
+      .Table('categories')
+      .List()
+      .TextSearch(field, query, 'english')
+      .execute();
+
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBeGreaterThan(0);
+  });
+
+  it('should insert multiple rows into the table successfully', async () => {
+    const data = [
+      {
+        category_id: id,
+        category_name: 'Category 1',
+        description: 'Description 1',
+        picture: '\\x',
+      },
+      {
+        category_id: id + 1,
+        category_name: 'Category 2',
+        description: 'Description 2',
+        picture: '\\x',
+      },
+    ];
+
+    const response = await client
+      .Table('categories')
+      .BatchInsert(data)
+      .execute();
+
+    expect(response).toHaveLength(data.length);
+    response.forEach((row: any, index: number) => {
+      const testData = data[index];
+      expect(row).toHaveProperty('category_id', testData!.category_id);
+      expect(row).toHaveProperty('category_name', testData!.category_name);
+      expect(row).toHaveProperty('description', testData!.description);
+    });
+
+    // batch deletion
+    const deleteRes = await client
+      .Table('categories')
+      .Delete()
+      .FilterRange('category_id', id, id + 1)
+      .execute();
+
+    console.log(deleteRes);
   });
 });

@@ -459,12 +459,33 @@ class ChainedQuery {
     return this;
   }
 
-  // FilterOperators(operator: string, field: string, value: any): ChainedQuery {
-  //   const filterClause = `${operator}:${field}:${encodeURIComponent(value)}`;
-  //   this.chainedOperations.push(filterClause);
-  //   return this;
-  // }
-
+  /**
+   * Filters results based on a field being within a specific range.
+   *
+   * @param field The name of the field to filter on.
+   * @param start (optional) The lower bound of the range (inclusive).
+   * @param end (optional) The upper bound of the range (inclusive).
+   * @returns A chained query object for further building the query.
+   *
+   * @example
+   * ```typescript
+   * // Filter categories where 'category_id' is between 200 and 300 (inclusive)
+   * const response = await client
+   *   .Table('categories')
+   *   .List()
+   *   .FilterRange('category_id', 200, 300)
+   *   .execute();
+   * ```
+   *
+   * @example
+   * // Filter categories where 'category_id' is greater than or equal to 200
+   * const response = await client
+   *   .Table('categories')
+   *   .List()
+   *   .FilterRange('category_id', 200)
+   *   .execute();
+   * ```
+   */
   FilterRange(field: string, start: any, end: any): ChainedQuery {
     if (start !== undefined) {
       this.chainedOperations.push(`${field}=$gte.${encodeURIComponent(start)}`);
@@ -475,6 +496,32 @@ class ChainedQuery {
     return this;
   }
 
+  /**
+   * Performs a join between tables.
+   *
+   * @param type The type of join to perform (e.g., 'inner', 'left', 'right').
+   * @param table The name of the table to join with.
+   * @param leftField The field name from the current table.
+   * @param operator The comparison operator to use (e.g., '$eq', '$gt', '$lt').
+   * @param rightField The field name from the joined table.
+   * @returns A chained query object for further building the query.
+   *
+   * @example
+   * ```typescript
+   * // Perform an inner join between 'categories' and 'products' tables
+   * const response = await client
+   *   .Table('categories')
+   *   .List()
+   *   .Join(
+   *     'inner',
+   *     'products',
+   *     'categories.category_id',
+   *     '$eq',
+   *     'products.category_id',
+   *   )
+   *   .execute();
+   * ```
+   */
   Join(
     joinType: 'inner' | 'left' | 'right' | 'outer',
     joinTable: string,
@@ -487,9 +534,54 @@ class ChainedQuery {
     return this;
   }
 
+  /**
+   * Filters results based on a JSON field using a JSONB path expression.
+   *
+   * @param field The name of the JSON field to filter on.
+   * @param path The JSONB path expression to use for filtering.
+   * @param value The value to compare against the path in the JSON field.
+   * @returns A chained query object for further building the query.
+   *
+   * @example
+   * ```typescript
+   * // Assuming a 'mock_json' table with a 'jsonb_data' field containing JSON data
+   * const response = await client
+   *   .Table('mock_json')
+   *   .List()
+   *   .JSONbFilter('jsonb_data', 'tags', 1)
+   *   .execute();
+   * ```
+   */
   JSONbFilter(field: string, jsonField: string, value: any): ChainedQuery {
     const filterClause = `${field}->>${jsonField}:jsonb=${encodeURIComponent(value)}`;
     this.chainedOperations.push(filterClause);
+    return this;
+  }
+
+  /**
+   * Adds a full-text search filter to the query using tsquery syntax.
+   *
+   * @param field - The field to perform the text search on.
+   * @param query - The tsquery string representing the search query.
+   * @param language - The language to tokenize the query in (optional).
+   * @returns The ChainedQuery instance to allow for method chaining.
+   *
+   * @example
+   * ```typescript
+   * // Perform a full-text search for documents containing 'fat' and 'rat'
+   * const query = client.Table('documents').List()
+   *   .TextSearch('content', 'fat & rat')
+   *   .execute();
+   *
+   * // Perform a full-text search in Portuguese language for documents containing 'gato' and 'cão'
+   * const query = client.Table('documents').List()
+   *   .TextSearch('content', 'gato & cão', 'portuguese')
+   *   .execute();
+   * ```
+   */
+  TextSearch(field: string, query: string, language?: string): ChainedQuery {
+    const tsQuery = `${field}${language ? '$' + language : ''}:tsquery=${encodeURIComponent(query)}`;
+    this.chainedOperations.push(tsQuery);
     return this;
   }
 
@@ -727,6 +819,41 @@ export class PrestApiClient {
     Insert: (data: any) => ChainedQuery;
 
     /**
+     * Inserts multiple rows of data into the table in a single request.
+     *
+     * @param data An array of objects representing the data to insert.
+     *                 Each object should have properties matching the table's columns.
+     * @returns A promise resolving to an array containing the inserted rows.
+     *         Each row will have the same structure as the provided data objects,
+     *         including any server-generated values (e.g., auto-incrementing IDs).
+     *
+     * @example
+     * ```typescript
+     * const data = [
+     *   {
+     *     category_name: 'Category 1',
+     *     description: 'Description 1',
+     *     picture: '\\x',
+     *   },
+     *   {
+     *     category_name: 'Category 2',
+     *     description: 'Description 2',
+     *     picture: '\\x',
+     *   },
+     * ];
+     *
+     * const response = await client
+     *   .Table('categories')
+     *   .BatchInsert(data)
+     *   .execute();
+     *
+     * console.log(response);
+     * // response will be an array of inserted objects with potentially added server-generated IDs
+     * ```
+     */
+    BatchInsert: (data: any[]) => ChainedQuery;
+
+    /**
      * Updates data in the specified table based on the provided field and value.
      *
      * @param field - The field to filter by for updating.
@@ -795,6 +922,10 @@ export class PrestApiClient {
       },
       Insert: (data: any): ChainedQuery => {
         const baseUrl = `${this.base_url}/${this.database}/${schemaName}/${tableName}`;
+        return new ChainedQuery(this, baseUrl, 'post', data);
+      },
+      BatchInsert: (data: any): ChainedQuery => {
+        const baseUrl = `${this.base_url}/batch/${this.database}/${schemaName}/${tableName}`;
         return new ChainedQuery(this, baseUrl, 'post', data);
       },
       Update: (data: any): ChainedQuery => {

@@ -50,7 +50,7 @@ Creates a new Prest API client with the provided options.
 
 #### Defined in
 
-[api/client.ts:533](https://github.com/pgEdge/prest-client/blob/0cd2921/src/api/client.ts#L533)
+[api/client.ts:653](https://github.com/pgEdge/prest-client/blob/a826c29/src/api/client.ts#L653)
 
 ## Properties
 
@@ -62,7 +62,7 @@ The underlying HTTP client for making requests to the Prest API.
 
 #### Defined in
 
-[api/client.ts:514](https://github.com/pgEdge/prest-client/blob/0cd2921/src/api/client.ts#L514)
+[api/client.ts:634](https://github.com/pgEdge/prest-client/blob/a826c29/src/api/client.ts#L634)
 
 ___
 
@@ -74,7 +74,7 @@ The options used to configure the client.
 
 #### Defined in
 
-[api/client.ts:526](https://github.com/pgEdge/prest-client/blob/0cd2921/src/api/client.ts#L526)
+[api/client.ts:646](https://github.com/pgEdge/prest-client/blob/a826c29/src/api/client.ts#L646)
 
 ## Accessors
 
@@ -90,7 +90,7 @@ Gets the base URL of the Prest API endpoint to which the client is connected.
 
 #### Defined in
 
-[api/client.ts:793](https://github.com/pgEdge/prest-client/blob/0cd2921/src/api/client.ts#L793)
+[api/client.ts:952](https://github.com/pgEdge/prest-client/blob/a826c29/src/api/client.ts#L952)
 
 ___
 
@@ -106,7 +106,7 @@ Gets the name of the database to which the client is connected.
 
 #### Defined in
 
-[api/client.ts:786](https://github.com/pgEdge/prest-client/blob/0cd2921/src/api/client.ts#L786)
+[api/client.ts:945](https://github.com/pgEdge/prest-client/blob/a826c29/src/api/client.ts#L945)
 
 ## Methods
 
@@ -130,6 +130,7 @@ An object with methods for interacting with the table.
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
+| `BatchInsert` | (`data`: `any`[]) => `ChainedQuery` | Inserts multiple rows of data into the table in a single request. **`Example`** ```typescript const data = [ { category_name: 'Category 1', description: 'Description 1', picture: '\\x', }, { category_name: 'Category 2', description: 'Description 2', picture: '\\x', }, ]; const response = await client .Table('categories') .BatchInsert(data) .execute(); console.log(response); // response will be an array of inserted objects with potentially added server-generated IDs ``` |
 | `Delete` | () => `ChainedQuery` | Deletes data from the specified table based on the provided field and value. **`Throws`** An error if deleting data fails. **`Example`** ```ts const response = await client.Table('user').Delete( 'user_id', // Field to filter by userIdToDelete // Value of the field to filter by ); // Deletes data from the 'user' table where 'user_id' equals 'userIdToDelete'. // Executes DELETE `/:database/:schema/:table?field=value`. ``` |
 | `Insert` | (`data`: `any`) => `ChainedQuery` | Inserts data into the specified table. **`Throws`** An error if inserting data fails. **`Example`** ```ts const response = await client.Table('user').Insert({ user_name: 'Ronaldo', description: 'Siuuu!!!', picture: '\\x', }); // Inserts a new row into the 'user' table. // Executes POST `/:database/:schema/:table`. ``` |
 | `List` | () => `ChainedQuery` | Retrieves the structure of the specified table. **`Throws`** An error if fetching the table structure fails. **`Example`** ```ts const response = await client.Table('user').List(); // Queries the rows of the 'user' table. Public schema is used by default. // Executes GET `/:database/:schema/:table`. ``` **`Example`** ```ts const response = await client.Table('private.user').List(); // Retrieves the rows of the 'user' table in the 'private' schema. // Executes GET `/:database/:schema/:table`. ``` **`Example`** ```ts const response = await client.Table('public.').List(); // Retrieves a list of tables in the 'public' schema. // Executes GET `/:database/:schema`. // Note: The dot at the end is to ignore the table name. ``` |
@@ -138,7 +139,7 @@ An object with methods for interacting with the table.
 
 #### Defined in
 
-[api/client.ts:645](https://github.com/pgEdge/prest-client/blob/0cd2921/src/api/client.ts#L645)
+[api/client.ts:765](https://github.com/pgEdge/prest-client/blob/a826c29/src/api/client.ts#L765)
 
 ___
 
@@ -154,7 +155,7 @@ Creates the underlying HTTP client with the necessary authentication headers.
 
 #### Defined in
 
-[api/client.ts:541](https://github.com/pgEdge/prest-client/blob/0cd2921/src/api/client.ts#L541)
+[api/client.ts:661](https://github.com/pgEdge/prest-client/blob/a826c29/src/api/client.ts#L661)
 
 ___
 
@@ -195,4 +196,4 @@ An error if the client is not initialized or the method is invalid.
 
 #### Defined in
 
-[api/client.ts:620](https://github.com/pgEdge/prest-client/blob/0cd2921/src/api/client.ts#L620)
+[api/client.ts:740](https://github.com/pgEdge/prest-client/blob/a826c29/src/api/client.ts#L740)
