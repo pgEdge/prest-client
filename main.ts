@@ -1,10 +1,10 @@
 import { PrestApiClient, PrestApiClientOptions } from "prest-client";
 
 const options: PrestApiClientOptions = {
-    base_url: "https://merely-prime-bunny.a1.pgedge.io",
-    user_name: "app",
-    password: "1b9hm8l7S2GY7jM96vuKl02X",
-    database: "defaultdb",
+    base_url: "",
+    user_name: "",
+    password: "",
+    database: "",
 };
 const client = new PrestApiClient(options);
 
