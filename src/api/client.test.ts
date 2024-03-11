@@ -392,4 +392,128 @@ describe('PrestApiClient', () => {
     expect(response.length).toBeGreaterThan(0);
   });
   // tests for function methods ends
+
+  //advanced query methods starts
+  it('should apply FilterRange for start value correctly', async () => {
+    const start = '200';
+    const response = await client
+      .Table('categories')
+      .List()
+      .FilterRange('category_id', start, undefined)
+      .execute();
+
+    console.log(response);
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBeGreaterThan(0);
+    response.forEach((item: any) => {
+      expect(item.category_id >= start).toBeTruthy();
+    });
+  });
+
+  it('should apply FilterRange for end value correctly', async () => {
+    const end = '300';
+    const response = await client
+      .Table('categories')
+      .List()
+      .FilterRange('category_id', undefined, end)
+      .execute();
+
+    console.log(response);
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBeGreaterThan(0);
+    response.forEach((item: any) => {
+      expect(item.category_id <= end).toBeTruthy();
+    });
+  });
+
+  it('should apply FilterRange for start and end values correctly', async () => {
+    const start = '200';
+    const end = '300';
+    const response = await client
+      .Table('categories')
+      .List()
+      .FilterRange('category_id', start, end)
+      .execute();
+
+    console.log(response);
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBeGreaterThan(0);
+    response.forEach((item: any) => {
+      const itemDate = item.category_id;
+      expect(itemDate >= start && itemDate <= end).toBeTruthy();
+    });
+  });
+
+  it('should perform inner join correctly', async () => {
+    const response = await client
+      .Table('categories')
+      .List()
+      .Join(
+        'inner',
+        'products',
+        'categories.category_id',
+        '$eq',
+        'products.category_id',
+      )
+      .execute();
+
+    console.log(response);
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBeGreaterThan(0);
+    response.forEach((item: any) => {
+      expect(item).toHaveProperty('category_id');
+      expect(item).toHaveProperty('category_name');
+      expect(item).toHaveProperty('description');
+      expect(item).toHaveProperty('picture');
+      expect(item).toHaveProperty('category_id');
+    });
+  });
+
+  it('should perform left join correctly', async () => {
+    const response = await client
+      .Table('categories')
+      .List()
+      .Join(
+        'left',
+        'products',
+        'categories.category_id',
+        '$eq',
+        'products.category_id',
+      )
+      .execute();
+
+    console.log(response);
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBeGreaterThan(0);
+    response.forEach((item: any) => {
+      expect(item).toHaveProperty('category_id');
+      expect(item).toHaveProperty('category_name');
+      expect(item).toHaveProperty('description');
+      expect(item).toHaveProperty('picture');
+    });
+  });
+
+  it('should perform right join correctly', async () => {
+    const response = await client
+      .Table('categories')
+      .List()
+      .Join(
+        'right',
+        'products',
+        'categories.category_id',
+        '$eq',
+        'products.category_id',
+      )
+      .execute();
+
+    console.log(response);
+    expect(Array.isArray(response)).toBeTruthy();
+    expect(response.length).toBeGreaterThan(0);
+    response.forEach((item: any) => {
+      expect(item).toHaveProperty('category_id');
+      expect(item).toHaveProperty('category_name');
+      expect(item).toHaveProperty('description');
+      expect(item).toHaveProperty('picture');
+    });
+  });
 });

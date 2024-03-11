@@ -465,6 +465,39 @@ class ChainedQuery {
   //   return this;
   // }
 
+  FilterRange(field: string, start: any, end: any): ChainedQuery {
+    if (start !== undefined) {
+      this.chainedOperations.push(`${field}=$gte.${encodeURIComponent(start)}`);
+    }
+    if (end !== undefined) {
+      this.chainedOperations.push(`${field}=$lte.${encodeURIComponent(end)}`);
+    }
+    return this;
+  }
+
+  Join(
+    joinType: 'inner' | 'left' | 'right' | 'outer',
+    joinTable: string,
+    localField: string,
+    operator: string,
+    foreignField: string,
+  ): ChainedQuery {
+    const joinClause = `_join=${joinType}:${joinTable}:${localField}:${operator}:${foreignField}`;
+    this.chainedOperations.push(joinClause);
+    return this;
+  }
+
+  JSONbFilter(
+    field: string,
+    jsonField: string,
+    operator: string,
+    value: any,
+  ): ChainedQuery {
+    const filterClause = `${field}->>json:${jsonField}:${operator}:${encodeURIComponent(value)}`;
+    this.chainedOperations.push(filterClause);
+    return this;
+  }
+
   /**
    * Executes the chained query operations and returns the result.
    *
