@@ -39,7 +39,7 @@ class ChainedQuery {
   private baseUrl: string;
   private reqType: 'get' | 'post' | 'put' | 'delete';
   private body: any;
-  private renderer: 'json' | 'xml' = 'json';
+  private rendererArg: 'json' | 'xml' = 'json';
   private sqlFunctions: string[] = [];
   private chainedOperations: string[];
 
@@ -76,12 +76,12 @@ class ChainedQuery {
    * @example
    * ```typescript
    * // Retrieve the second page (10 items per page) of products
-   * const query = client.Table('products').List()
-   *   .Page(1)
+   * const query = client.table('products').list()
+   *   .page(1)
    *   .execute();
    * ```
    */
-  Page(pageNumber: number): ChainedQuery {
+  page(pageNumber: number): ChainedQuery {
     this.chainedOperations.push(stringify({ _page: pageNumber }));
     return this;
   }
@@ -89,7 +89,7 @@ class ChainedQuery {
   /**
    * Adds a page size filter to the query, specifying the number of items to retrieve per page.
    *
-   * This is useful in conjunction with `Page` to control how many results are returned at a time.
+   * This is useful in conjunction with `page` to control how many results are returned at a time.
    *
    * @param pageSize - The number of items per page.
    * @returns The ChainedQuery instance to allow for method chaining.
@@ -97,12 +97,12 @@ class ChainedQuery {
    * @example
    * ```typescript
    * // Retrieve the first page (10 items per page) of customers
-   * const query = client.Table('customers').List()
-   *   .PageSize(10)
+   * const query = client.table('customers').list()
+   *   .pageSize(10)
    *   .execute();
    * ```
    */
-  PageSize(pageSize: number): ChainedQuery {
+  pageSize(pageSize: number): ChainedQuery {
     this.chainedOperations.push(stringify({ _page_size: pageSize }));
     return this;
   }
@@ -118,12 +118,12 @@ class ChainedQuery {
    * @example
    * ```typescript
    * // Retrieve only the 'id', 'name', and 'price' fields from products
-   * const query = client.Table('products').List()
-   *   .Select('id', 'name', 'price')
+   * const query = client.table('products').list()
+   *   .select('id', 'name', 'price')
    *   .execute();
    * ```
    */
-  Select(...fields: string[]): ChainedQuery {
+  select(...fields: string[]): ChainedQuery {
     this.chainedOperations.push(stringify({ _select: fields.join(',') }));
     return this;
   }
@@ -140,17 +140,17 @@ class ChainedQuery {
    * @example
    * ```typescript
    * // Count the total number of products
-   * const query = client.Table('products')
-   *   .Count()
+   * const query = client.table('products')
+   *   .count()
    *   .execute();
    *
    * // Count the number of active users
-   * const query = client.Table('users')
-   *   .Count('is_active')
+   * const query = client.table('users')
+   *   .count('is_active')
    *   .execute();
    * ```
    */
-  Count(field?: string): ChainedQuery {
+  count(field?: string): ChainedQuery {
     const fieldValue = field ? field : '*';
     this.chainedOperations.push(stringify({ _count: fieldValue }));
     return this;
@@ -167,17 +167,17 @@ class ChainedQuery {
    * @example
    * ```typescript
    * // Check if there are any active orders
-   * const query = client.Table('orders')
-   *   .CountFirst(true)
+   * const query = client.table('orders')
+   *   .countFirst(true)
    *   .execute();
    *
    * // Retrieve the first product
-   * const query = client.Table('products')
-   *   .CountFirst()
+   * const query = client.table('products')
+   *   .countFirst()
    *   .execute();
    * ```
    */
-  CountFirst(countFirst: boolean = true): ChainedQuery {
+  countFirst(countFirst: boolean = true): ChainedQuery {
     this.chainedOperations.push(stringify({ _count_first: countFirst }));
     return this;
   }
@@ -187,20 +187,20 @@ class ChainedQuery {
    *
    * By default, the response is formatted as JSON. Use this method to specify XML instead.
    *
-   * @param renderer - The desired output renderer ('json' or 'xml').
+   * @param rendererArg - The desired output renderer ('json' or 'xml').
    * @returns The ChainedQuery instance to allow for method chaining.
    *
    * @example
    * ```typescript
    * // Retrieve products in XML format
-   * const query = client.Table('products')
-   *   .Renderer('xml')
+   * const query = client.table('products')
+   *   .renderer('xml')
    *   .execute();
    * ```
    */
-  Renderer(renderer: 'json' | 'xml'): ChainedQuery {
-    this.chainedOperations.push(stringify({ _renderer: renderer }));
-    this.renderer = renderer;
+  renderer(rendererArg: 'json' | 'xml'): ChainedQuery {
+    this.chainedOperations.push(stringify({ _renderer: rendererArg }));
+    this.rendererArg = rendererArg;
     return this;
   }
 
@@ -215,12 +215,12 @@ class ChainedQuery {
    * @example
    * ```typescript
    * // Retrieve distinct product categories
-   * const query = client.Table('products').List()
-   *   .Distinct(true)
+   * const query = client.table('products').list()
+   *   .distinct(true)
    *   .execute();
    * ```
    */
-  Distinct(distinct: boolean = true): ChainedQuery {
+  distinct(distinct: boolean = true): ChainedQuery {
     this.chainedOperations.push(stringify({ _distinct: distinct }));
     return this;
   }
@@ -236,17 +236,17 @@ class ChainedQuery {
    * @example
    * ```typescript
    * // Retrieve products ordered by price in descending order
-   * const query = client.Table('products').List()
-   *   .Order('-price')
+   * const query = client.table('products').list()
+   *   .order('-price')
    *   .execute();
    *
    * // Retrieve products ordered by price in ascending order, then by name in descending order
-   * const query = client.Table('products').List()
-   *   .Order('price', '-name')
+   * const query = client.table('products').list()
+   *   .order('price', '-name')
    *   .execute();
    * ```
    */
-  Order(...fields: string[]): ChainedQuery {
+  order(...fields: string[]): ChainedQuery {
     const orderFields = fields.map((field) =>
       field.startsWith('-') ? field : `${field}`,
     );
@@ -265,13 +265,13 @@ class ChainedQuery {
    * @example
    * ```typescript
    * // Retrieve total sales amount grouped by product category
-   * const query = client.Table('sales').List()
-   *   .GroupBy('product_category')
-   *   .Sum('sales_amount')
+   * const query = client.table('sales').list()
+   *   .groupBy('product_category')
+   *   .sum('sales_amount')
    *   .execute();
    * ```
    */
-  GroupBy(...fields: string[]): ChainedQuery {
+  groupBy(...fields: string[]): ChainedQuery {
     this.chainedOperations.push(stringify({ _groupby: fields.join(',') }));
     return this;
   }
@@ -286,12 +286,12 @@ class ChainedQuery {
    * @example
    * ```typescript
    * // Retrieve products with the 'category' field equal to 'electronics'
-   * const query = client.Table('products').List()
-   *   .FilterEqual('category', 'electronics')
+   * const query = client.table('products').list()
+   *   .filterEqual('category', 'electronics')
    *   .execute();
    * ```
    */
-  FilterEqual(field: string, value: any): ChainedQuery {
+  filterEqual(field: string, value: any): ChainedQuery {
     this.chainedOperations.push(`${field}=${encodeURIComponent(value)}`);
     return this;
   }
@@ -306,13 +306,13 @@ class ChainedQuery {
    * @example
    * ```typescript
    * // Retrieve the sum of category IDs grouped by category
-   * const query = client.Table('categories').List()
-   *   .GroupBy('category_id')
-   *   .Sum('category_id')
+   * const query = client.table('categories').list()
+   *   .groupBy('category_id')
+   *   .sum('category_id')
    *   .execute();
    * ```
    */
-  Sum(field: string): ChainedQuery {
+  sum(field: string): ChainedQuery {
     this.sqlFunctions.push(`sum:${field}`);
     return this;
   }
@@ -328,13 +328,13 @@ class ChainedQuery {
    * @example
    * ```typescript
    * // Retrieve the average of category IDs grouped by category
-   * const query = client.Table('categories').List()
-   *   .GroupBy('category_id')
-   *   .Avg('category_id')
+   * const query = client.table('categories').list()
+   *   .groupBy('category_id')
+   *   .avg('category_id')
    *   .execute();
    * ```
    */
-  Avg(field: string): ChainedQuery {
+  avg(field: string): ChainedQuery {
     this.sqlFunctions.push(`avg:${field}`);
     return this;
   }
@@ -350,13 +350,13 @@ class ChainedQuery {
    * @example
    * ```typescript
    * // Retrieve the maximum category ID grouped by category
-   * const query = client.Table('categories').List()
-   *   .GroupBy('category_id')
-   *   .Max('category_id')
+   * const query = client.table('categories').list()
+   *   .groupBy('category_id')
+   *   .max('category_id')
    *   .execute();
    * ```
    */
-  Max(field: string): ChainedQuery {
+  max(field: string): ChainedQuery {
     this.sqlFunctions.push(`max:${field}`);
     return this;
   }
@@ -372,13 +372,13 @@ class ChainedQuery {
    * @example
    * ```typescript
    * // Retrieve the minimum category ID grouped by category
-   * const query = client.Table('categories').List()
-   *   .GroupBy('category_id')
-   *   .Min('category_id')
+   * const query = client.table('categories').list()
+   *   .groupBy('category_id')
+   *   .min('category_id')
    *   .execute();
    * ```
    */
-  Min(field: string): ChainedQuery {
+  min(field: string): ChainedQuery {
     this.sqlFunctions.push(`min:${field}`);
     return this;
   }
@@ -394,13 +394,13 @@ class ChainedQuery {
    * @example
    * ```typescript
    * // Retrieve the standard deviation of category IDs grouped by category
-   * const query = client.Table('categories').List()
-   *   .GroupBy('category_id')
-   *   .StdDev('category_id')
+   * const query = client.table('categories').list()
+   *   .groupBy('category_id')
+   *   .stdDev('category_id')
    *   .execute();
    * ```
    */
-  StdDev(field: string): ChainedQuery {
+  stdDev(field: string): ChainedQuery {
     this.sqlFunctions.push(`stddev:${field}`);
     return this;
   }
@@ -416,19 +416,19 @@ class ChainedQuery {
    * @example
    * ```typescript
    * // Retrieve the variance of category IDs grouped by category
-   * const query = client.Table('categories').List()
-   *   .GroupBy('category_id')
-   *   .Variance('category_id')
+   * const query = client.table('categories').list()
+   *   .groupBy('category_id')
+   *   .variance('category_id')
    *   .execute();
    * ```
    */
-  Variance(field: string): ChainedQuery {
+  variance(field: string): ChainedQuery {
     this.sqlFunctions.push(`variance:${field}`);
     return this;
   }
 
   /**
-   * Adds a Having filter to the query, specifying a condition for aggregated values after grouping.
+   * Adds a having filter to the query, specifying a condition for aggregated values after grouping.
    *
    * This is useful when you want to filter grouped results based on aggregated values.
    *
@@ -441,14 +441,14 @@ class ChainedQuery {
    * @example
    * ```typescript
    * // Retrieve categories where the sum of category IDs is greater than 5
-   * const query = client.Table('categories').List()
-   *   .GroupBy('category_id')
-   *   .Sum('category_id')
-   *   .Having('sum', 'category_id', '$gt', 5)
+   * const query = client.table('categories').list()
+   *   .groupBy('category_id')
+   *   .sum('category_id')
+   *   .having('sum', 'category_id', '$gt', 5)
    *   .execute();
    * ```
    */
-  Having(
+  having(
     groupFunc: string,
     field: string,
     condition: string,
@@ -471,22 +471,22 @@ class ChainedQuery {
    * ```typescript
    * // Filter categories where 'category_id' is between 200 and 300 (inclusive)
    * const response = await client
-   *   .Table('categories')
-   *   .List()
-   *   .FilterRange('category_id', 200, 300)
+   *   .table('categories')
+   *   .list()
+   *   .filterRange('category_id', 200, 300)
    *   .execute();
    * ```
    *
    * @example
    * // Filter categories where 'category_id' is greater than or equal to 200
    * const response = await client
-   *   .Table('categories')
-   *   .List()
-   *   .FilterRange('category_id', 200)
+   *   .table('categories')
+   *   .list()
+   *   .filterRange('category_id', 200)
    *   .execute();
    * ```
    */
-  FilterRange(field: string, start: any, end: any): ChainedQuery {
+  filterRange(field: string, start?: any, end?: any): ChainedQuery {
     if (start !== undefined) {
       this.chainedOperations.push(`${field}=$gte.${encodeURIComponent(start)}`);
     }
@@ -510,9 +510,9 @@ class ChainedQuery {
    * ```typescript
    * // Perform an inner join between 'categories' and 'products' tables
    * const response = await client
-   *   .Table('categories')
-   *   .List()
-   *   .Join(
+   *   .table('categories')
+   *   .list()
+   *   .join(
    *     'inner',
    *     'products',
    *     'categories.category_id',
@@ -522,14 +522,14 @@ class ChainedQuery {
    *   .execute();
    * ```
    */
-  Join(
+  join(
     joinType: 'inner' | 'left' | 'right' | 'outer',
-    joinTable: string,
+    jointable: string,
     localField: string,
     operator: string,
     foreignField: string,
   ): ChainedQuery {
-    const joinClause = `_join=${joinType}:${joinTable}:${localField}:${operator}:${foreignField}`;
+    const joinClause = `_join=${joinType}:${jointable}:${localField}:${operator}:${foreignField}`;
     this.chainedOperations.push(joinClause);
     return this;
   }
@@ -546,13 +546,13 @@ class ChainedQuery {
    * ```typescript
    * // Assuming a 'mock_json' table with a 'jsonb_data' field containing JSON data
    * const response = await client
-   *   .Table('mock_json')
-   *   .List()
-   *   .JSONbFilter('jsonb_data', 'tags', 1)
+   *   .table('mock_json')
+   *   .list()
+   *   .jsonbFilter('jsonb_data', 'tags', 1)
    *   .execute();
    * ```
    */
-  JSONbFilter(field: string, jsonField: string, value: any): ChainedQuery {
+  jsonbFilter(field: string, jsonField: string, value: any): ChainedQuery {
     const filterClause = `${field}->>${jsonField}:jsonb=${encodeURIComponent(value)}`;
     this.chainedOperations.push(filterClause);
     return this;
@@ -569,17 +569,17 @@ class ChainedQuery {
    * @example
    * ```typescript
    * // Perform a full-text search for documents containing 'fat' and 'rat'
-   * const query = client.Table('documents').List()
-   *   .TextSearch('content', 'fat & rat')
+   * const query = client.table('documents').list()
+   *   .textSearch('content', 'fat & rat')
    *   .execute();
    *
    * // Perform a full-text search in Portuguese language for documents containing 'gato' and 'cão'
-   * const query = client.Table('documents').List()
-   *   .TextSearch('content', 'gato & cão', 'portuguese')
+   * const query = client.table('documents').list()
+   *   .textSearch('content', 'gato & cão', 'portuguese')
    *   .execute();
    * ```
    */
-  TextSearch(field: string, query: string, language?: string): ChainedQuery {
+  textSearch(field: string, query: string, language?: string): ChainedQuery {
     const tsQuery = `${field}${language ? '$' + language : ''}:tsquery=${encodeURIComponent(query)}`;
     this.chainedOperations.push(tsQuery);
     return this;
@@ -610,7 +610,7 @@ class ChainedQuery {
       const httpClientMethod = this.client.getHttpClientMethod(this.reqType);
       const response = await httpClientMethod(chainedUrl, this.body);
 
-      if (this.renderer === 'json') {
+      if (this.rendererArg === 'json') {
         return response.json();
       } else {
         return response.text();
@@ -762,7 +762,7 @@ export class PrestApiClient {
    * @param tableName - The name of the table.
    * @returns An object with methods for interacting with the table.
    */
-  Table(tableName: string | undefined): {
+  table(tableName: string | undefined): {
     /**
      * Retrieves the structure of the specified table.
      *
@@ -770,22 +770,22 @@ export class PrestApiClient {
      * @throws An error if fetching the table structure fails.
      *
      * @example
-     * const response = await client.Table('user').List();
+     * const response = await client.table('user').list();
      * // Queries the rows of the 'user' table. Public schema is used by default.
      * // Executes GET `/:database/:schema/:table`.
      *
      * @example
-     * const response = await client.Table('private.user').List();
+     * const response = await client.table('private.user').list();
      * // Retrieves the rows of the 'user' table in the 'private' schema.
      * // Executes GET `/:database/:schema/:table`.
      *
      * @example
-     * const response = await client.Table('public.').List();
+     * const response = await client.table('public.').list();
      * // Retrieves a list of tables in the 'public' schema.
      * // Executes GET `/:database/:schema`.
      * // Note: The dot at the end is to ignore the table name.
      */
-    List: () => ChainedQuery;
+    list: () => ChainedQuery;
 
     /**
      * Retrieves data from the specified table.
@@ -794,11 +794,11 @@ export class PrestApiClient {
      * @throws An error if fetching data from the table fails.
      *
      * @example
-     * const response = await client.Table('user').Show();
+     * const response = await client.table('user').show();
      * // Retrieves data from the 'user' table.
      * // Executes GET `/show/:database/:schema/:table`.
      */
-    Show: () => ChainedQuery;
+    show: () => ChainedQuery;
 
     /**
      * Inserts data into the specified table.
@@ -808,7 +808,7 @@ export class PrestApiClient {
      * @throws An error if inserting data fails.
      *
      * @example
-     * const response = await client.Table('user').Insert({
+     * const response = await client.table('user').insert({
      *   user_name: 'Ronaldo',
      *   description: 'Siuuu!!!',
      *   picture: '\\x',
@@ -816,7 +816,7 @@ export class PrestApiClient {
      * // Inserts a new row into the 'user' table.
      * // Executes POST `/:database/:schema/:table`.
      */
-    Insert: (data: any) => ChainedQuery;
+    insert: (data: any) => ChainedQuery;
 
     /**
      * Inserts multiple rows of data into the table in a single request.
@@ -843,15 +843,15 @@ export class PrestApiClient {
      * ];
      *
      * const response = await client
-     *   .Table('categories')
-     *   .BatchInsert(data)
+     *   .table('categories')
+     *   .batchInsert(data)
      *   .execute();
      *
      * console.log(response);
      * // response will be an array of inserted objects with potentially added server-generated IDs
      * ```
      */
-    BatchInsert: (data: any[]) => ChainedQuery;
+    batchInsert: (data: any[]) => ChainedQuery;
 
     /**
      * Updates data in the specified table based on the provided field and value.
@@ -863,7 +863,7 @@ export class PrestApiClient {
      * @throws An error if updating data fails.
      *
      * @example
-     * const response = await client.Table('user').Update(
+     * const response = await client.table('user').update(
      *   'user_id', // Field to filter by
      *   userIdToUpdate, // Value of the field to filter by
      *   {
@@ -875,7 +875,7 @@ export class PrestApiClient {
      * // Updates data in the 'user' table where 'user_id' equals 'userIdToUpdate'.
      * // Executes PUT `/:database/:schema/:table?field=value`.
      */
-    Update: (data: any) => ChainedQuery;
+    update: (data: any) => ChainedQuery;
 
     /**
      * Deletes data from the specified table based on the provided field and value.
@@ -886,21 +886,21 @@ export class PrestApiClient {
      * @throws An error if deleting data fails.
      *
      * @example
-     * const response = await client.Table('user').Delete(
+     * const response = await client.table('user').delete(
      *   'user_id', // Field to filter by
      *   userIdToDelete // Value of the field to filter by
      * );
      * // Deletes data from the 'user' table where 'user_id' equals 'userIdToDelete'.
      * // Executes DELETE `/:database/:schema/:table?field=value`.
      */
-    Delete: () => ChainedQuery;
+    delete: () => ChainedQuery;
   } {
     if (!this.client) {
       throw new Error('Client not initialized');
     }
 
     if (!tableName) {
-      throw new Error('Table name is required');
+      throw new Error('table name is required');
     }
 
     let schemaName: string = 'public';
@@ -911,28 +911,28 @@ export class PrestApiClient {
     }
 
     return {
-      List: (): ChainedQuery => {
+      list: (): ChainedQuery => {
         const baseUrl = `${this.base_url}/${this.database}/${schemaName}/${tableName}`;
         return new ChainedQuery(this, baseUrl, 'get', null);
       },
 
-      Show: (): ChainedQuery => {
+      show: (): ChainedQuery => {
         const baseUrl = `${this.base_url}/show/${this.database}/${schemaName}/${tableName}`;
         return new ChainedQuery(this, baseUrl, 'get', null);
       },
-      Insert: (data: any): ChainedQuery => {
+      insert: (data: any): ChainedQuery => {
         const baseUrl = `${this.base_url}/${this.database}/${schemaName}/${tableName}`;
         return new ChainedQuery(this, baseUrl, 'post', data);
       },
-      BatchInsert: (data: any): ChainedQuery => {
+      batchInsert: (data: any): ChainedQuery => {
         const baseUrl = `${this.base_url}/batch/${this.database}/${schemaName}/${tableName}`;
         return new ChainedQuery(this, baseUrl, 'post', data);
       },
-      Update: (data: any): ChainedQuery => {
+      update: (data: any): ChainedQuery => {
         const baseUrl = `${this.base_url}/${this.database}/${schemaName}/${tableName}`;
         return new ChainedQuery(this, baseUrl, 'put', data);
       },
-      Delete: (): ChainedQuery => {
+      delete: (): ChainedQuery => {
         const baseUrl = `${this.base_url}/${this.database}/${schemaName}/${tableName}`;
         return new ChainedQuery(this, baseUrl, 'delete', null);
       },

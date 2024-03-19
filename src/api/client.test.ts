@@ -18,28 +18,28 @@ describe('PrestApiClient', () => {
   });
 
   it('should fetch categories successfully', async () => {
-    const response = await client.Table('categories').List().execute();
+    const response = await client.table('categories').list().execute();
     console.log(response);
     expect(Array.isArray(response)).toBeTruthy();
     expect(response.length).toBeGreaterThan(0);
   });
 
   it('should fetch categories from public schema successfully', async () => {
-    const response = await client.Table('public.categories').List().execute();
+    const response = await client.table('public.categories').list().execute();
     console.log(response);
     expect(Array.isArray(response)).toBeTruthy();
     expect(response.length).toBeGreaterThan(0);
   });
 
   it('should retrieve a list of tables in a schema', async () => {
-    const response = await client.Table('public.').List().execute();
+    const response = await client.table('public.').list().execute();
     console.log(response);
     expect(Array.isArray(response)).toBeTruthy();
     expect(response.length).toBeGreaterThan(0);
   });
 
   it('should fetch information about a table successfully using Show method', async () => {
-    const response = await client.Table('categories').Show().execute();
+    const response = await client.table('categories').show().execute();
     console.log(response);
     expect(Array.isArray(response)).toBeTruthy();
     expect(response.length).toBeGreaterThan(0);
@@ -75,7 +75,7 @@ describe('PrestApiClient', () => {
       picture: '\\x',
     };
 
-    const response = await client.Table('categories').Insert(data).execute();
+    const response = await client.table('categories').insert(data).execute();
 
     expect(response).toHaveProperty('category_id');
     expect(typeof response.category_id).toBe('number');
@@ -94,9 +94,9 @@ describe('PrestApiClient', () => {
     };
 
     const response = await client
-      .Table('categories')
-      .Update(dataToUpdate)
-      .FilterEqual('category_id', categoryIdToUpdate)
+      .table('categories')
+      .update(dataToUpdate)
+      .filterEqual('category_id', categoryIdToUpdate)
       .execute();
 
     expect(response).toEqual({ rows_affected: 1 });
@@ -106,9 +106,9 @@ describe('PrestApiClient', () => {
     const categoryIdToDelete = id;
 
     const response = await client
-      .Table('categories')
-      .Delete()
-      .FilterEqual('category_id', categoryIdToDelete)
+      .table('categories')
+      .delete()
+      .filterEqual('category_id', categoryIdToDelete)
       .execute();
 
     expect(response).toEqual({ rows_affected: 1 });
@@ -117,18 +117,18 @@ describe('PrestApiClient', () => {
   // test for filter query methods starts
 
   it('should apply Page filter correctly', async () => {
-    const response = await client.Table('categories').List().Page(2).execute();
+    const response = await client.table('categories').list().page(2).execute();
 
     console.log(response);
     expect(Array.isArray(response)).toBeTruthy();
     expect(response.length).toBeGreaterThan(0);
   });
 
-  it('should apply PageSize filter correctly', async () => {
+  it('should apply pageSize filter correctly', async () => {
     const response = await client
-      .Table('categories')
-      .List()
-      .PageSize(30)
+      .table('categories')
+      .list()
+      .pageSize(30)
       .execute();
 
     console.log(response);
@@ -136,11 +136,11 @@ describe('PrestApiClient', () => {
     expect(response.length).toBeLessThanOrEqual(32);
   });
 
-  it('should apply Select filter correctly', async () => {
+  it('should apply select filter correctly', async () => {
     const response = await client
-      .Table('categories')
-      .List()
-      .Select('category_id', 'category_name')
+      .table('categories')
+      .list()
+      .select('category_id', 'category_name')
       .execute();
 
     console.log(response);
@@ -152,11 +152,11 @@ describe('PrestApiClient', () => {
     expect(response[0]).not.toHaveProperty('picture');
   });
 
-  it('should apply Count filter correctly', async () => {
+  it('should apply count filter correctly', async () => {
     const response = await client
-      .Table('categories')
-      .List()
-      .Count('category_id')
+      .table('categories')
+      .list()
+      .count('category_id')
       .execute();
 
     console.log(response);
@@ -165,11 +165,11 @@ describe('PrestApiClient', () => {
     expect(response[0]).toHaveProperty('count');
   });
 
-  it('should apply CountFirst filter correctly', async () => {
+  it('should apply countFirst filter correctly', async () => {
     const response = await client
-      .Table('categories')
-      .List()
-      .CountFirst()
+      .table('categories')
+      .list()
+      .countFirst()
       .execute();
 
     console.log(response);
@@ -178,17 +178,17 @@ describe('PrestApiClient', () => {
     expect(response[0]).toHaveProperty('category_id');
   });
 
-  it('should apply Renderer filter correctly', async () => {
+  it('should apply renderer filter correctly', async () => {
     const jsonResponse = await client
-      .Table('categories')
-      .List()
-      .Renderer('json')
+      .table('categories')
+      .list()
+      .renderer('json')
       .execute();
 
     const xmlResponse = await client
-      .Table('categories')
-      .List()
-      .Renderer('xml')
+      .table('categories')
+      .list()
+      .renderer('xml')
       .execute();
 
     console.log(jsonResponse);
@@ -197,11 +197,11 @@ describe('PrestApiClient', () => {
     expect(typeof xmlResponse).toBe('string');
   });
 
-  it('should apply Distinct filter correctly', async () => {
+  it('should apply distinct filter correctly', async () => {
     const response = await client
-      .Table('categories')
-      .List()
-      .Distinct()
+      .table('categories')
+      .list()
+      .distinct()
       .execute();
 
     console.log(response);
@@ -214,17 +214,17 @@ describe('PrestApiClient', () => {
     expect(categoryNames.length).toBe(uniqueCategoryNames.size);
   });
 
-  it('should apply Order filter correctly', async () => {
+  it('should apply order filter correctly', async () => {
     const ascResponse = await client
-      .Table('categories')
-      .List()
-      .Order('category_id')
+      .table('categories')
+      .list()
+      .order('category_id')
       .execute();
 
     const descResponse = await client
-      .Table('categories')
-      .List()
-      .Order('-category_id')
+      .table('categories')
+      .list()
+      .order('-category_id')
       .execute();
 
     console.log(ascResponse);
@@ -249,11 +249,11 @@ describe('PrestApiClient', () => {
     expect(descIds).toEqual(descIds.sort((a, b) => b - a));
   });
 
-  it('should apply GroupBy filter correctly', async () => {
+  it('should apply groupBy filter correctly', async () => {
     const response = await client
-      .Table('categories')
-      .List()
-      .GroupBy('category_id')
+      .table('categories')
+      .list()
+      .groupBy('category_id')
       .execute();
 
     console.log(response);
@@ -264,11 +264,11 @@ describe('PrestApiClient', () => {
     expect(categoryIds.length).toBe(uniqueCategoryIds.size);
   });
 
-  it('should apply FilterEqual filter correctly', async () => {
+  it('should apply filterEqual filter correctly', async () => {
     const response = await client
-      .Table('categories')
-      .List()
-      .FilterEqual('category_name', 'Footballer')
+      .table('categories')
+      .list()
+      .filterEqual('category_name', 'Footballer')
       .execute();
 
     console.log(response);
@@ -282,12 +282,12 @@ describe('PrestApiClient', () => {
   // test for filter query methods ends
 
   // test for function methods starts
-  it('should apply Sum function correctly', async () => {
+  it('should apply sum function correctly', async () => {
     const response = await client
-      .Table('categories')
-      .List()
-      .GroupBy('category_id')
-      .Sum('category_id')
+      .table('categories')
+      .list()
+      .groupBy('category_id')
+      .sum('category_id')
       .execute();
 
     console.log(response);
@@ -298,12 +298,12 @@ describe('PrestApiClient', () => {
     });
   });
 
-  it('should apply Avg function correctly', async () => {
+  it('should apply avg function correctly', async () => {
     const response = await client
-      .Table('categories')
-      .List()
-      .GroupBy('category_id')
-      .Avg('category_id')
+      .table('categories')
+      .list()
+      .groupBy('category_id')
+      .avg('category_id')
       .execute();
 
     console.log(response);
@@ -314,12 +314,12 @@ describe('PrestApiClient', () => {
     });
   });
 
-  it('should apply Max function correctly', async () => {
+  it('should apply max function correctly', async () => {
     const response = await client
-      .Table('categories')
-      .List()
-      .GroupBy('category_id')
-      .Max('category_id')
+      .table('categories')
+      .list()
+      .groupBy('category_id')
+      .max('category_id')
       .execute();
 
     console.log(response);
@@ -330,12 +330,12 @@ describe('PrestApiClient', () => {
     });
   });
 
-  it('should apply Min function correctly', async () => {
+  it('should apply min function correctly', async () => {
     const response = await client
-      .Table('categories')
-      .List()
-      .GroupBy('category_id')
-      .Min('category_id')
+      .table('categories')
+      .list()
+      .groupBy('category_id')
+      .min('category_id')
       .execute();
 
     console.log(response);
@@ -346,12 +346,12 @@ describe('PrestApiClient', () => {
     });
   });
 
-  it('should apply StdDev function correctly', async () => {
+  it('should apply stdDev function correctly', async () => {
     const response = await client
-      .Table('categories')
-      .List()
-      .GroupBy('category_id')
-      .StdDev('category_id')
+      .table('categories')
+      .list()
+      .groupBy('category_id')
+      .stdDev('category_id')
       .execute();
 
     console.log(response);
@@ -362,12 +362,12 @@ describe('PrestApiClient', () => {
     });
   });
 
-  it('should apply Variance function correctly', async () => {
+  it('should apply variance function correctly', async () => {
     const response = await client
-      .Table('categories')
-      .List()
-      .GroupBy('category_id')
-      .Variance('category_id')
+      .table('categories')
+      .list()
+      .groupBy('category_id')
+      .variance('category_id')
       .execute();
 
     console.log(response);
@@ -378,13 +378,13 @@ describe('PrestApiClient', () => {
     });
   });
 
-  it('should apply Having filter correctly', async () => {
+  it('should apply having filter correctly', async () => {
     const response = await client
-      .Table('categories')
-      .List()
-      .GroupBy('category_id')
-      .Sum('category_id')
-      .Having('sum', 'category_id', '$gt', 5)
+      .table('categories')
+      .list()
+      .groupBy('category_id')
+      .sum('category_id')
+      .having('sum', 'category_id', '$gt', 5)
       .execute();
 
     console.log(response);
@@ -394,12 +394,12 @@ describe('PrestApiClient', () => {
   // tests for function methods ends
 
   //advanced query methods starts
-  it('should apply FilterRange for start value correctly', async () => {
+  it('should apply filterRange for start value correctly', async () => {
     const start = '200';
     const response = await client
-      .Table('categories')
-      .List()
-      .FilterRange('category_id', start, undefined)
+      .table('categories')
+      .list()
+      .filterRange('category_id', start, undefined)
       .execute();
 
     console.log(response);
@@ -410,12 +410,12 @@ describe('PrestApiClient', () => {
     });
   });
 
-  it('should apply FilterRange for end value correctly', async () => {
+  it('should apply filterRange for end value correctly', async () => {
     const end = '300';
     const response = await client
-      .Table('categories')
-      .List()
-      .FilterRange('category_id', undefined, end)
+      .table('categories')
+      .list()
+      .filterRange('category_id', undefined, end)
       .execute();
 
     console.log(response);
@@ -426,13 +426,13 @@ describe('PrestApiClient', () => {
     });
   });
 
-  it('should apply FilterRange for start and end values correctly', async () => {
+  it('should apply filterRange for start and end values correctly', async () => {
     const start = '200';
     const end = '300';
     const response = await client
-      .Table('categories')
-      .List()
-      .FilterRange('category_id', start, end)
+      .table('categories')
+      .list()
+      .filterRange('category_id', start, end)
       .execute();
 
     console.log(response);
@@ -446,9 +446,9 @@ describe('PrestApiClient', () => {
 
   it('should perform inner join correctly', async () => {
     const response = await client
-      .Table('categories')
-      .List()
-      .Join(
+      .table('categories')
+      .list()
+      .join(
         'inner',
         'products',
         'categories.category_id',
@@ -471,9 +471,9 @@ describe('PrestApiClient', () => {
 
   it('should perform left join correctly', async () => {
     const response = await client
-      .Table('categories')
-      .List()
-      .Join(
+      .table('categories')
+      .list()
+      .join(
         'left',
         'products',
         'categories.category_id',
@@ -495,9 +495,9 @@ describe('PrestApiClient', () => {
 
   it('should perform right join correctly', async () => {
     const response = await client
-      .Table('categories')
-      .List()
-      .Join(
+      .table('categories')
+      .list()
+      .join(
         'right',
         'products',
         'categories.category_id',
@@ -517,7 +517,7 @@ describe('PrestApiClient', () => {
     });
   });
 
-  it('should apply JSONbFilter correctly with JSONB data in the mock_json table', async () => {
+  it('should apply jsonbFilter correctly with JSONB data in the mock_json table', async () => {
     const newData = {
       tags: 1,
       metadata: {
@@ -527,16 +527,16 @@ describe('PrestApiClient', () => {
     };
 
     const insertedData = await client
-      .Table('mock_json')
-      .Insert({
+      .table('mock_json')
+      .insert({
         jsonb_data: JSON.stringify(newData),
       })
       .execute();
 
     const response = await client
-      .Table('mock_json')
-      .List()
-      .JSONbFilter('jsonb_data', 'tags', 1)
+      .table('mock_json')
+      .list()
+      .jsonbFilter('jsonb_data', 'tags', 1)
       .execute();
 
     console.log(response);
@@ -552,9 +552,9 @@ describe('PrestApiClient', () => {
     expect(tags).toBe(1);
 
     await client
-      .Table('mock_json')
-      .Delete()
-      .FilterEqual('id', insertedData.id)
+      .table('mock_json')
+      .delete()
+      .filterEqual('id', insertedData.id)
       .execute();
   });
 
@@ -563,9 +563,9 @@ describe('PrestApiClient', () => {
     const query = 'Que';
 
     const response = await client
-      .Table('categories')
-      .List()
-      .TextSearch(field, query)
+      .table('categories')
+      .list()
+      .textSearch(field, query)
       .execute();
 
     expect(Array.isArray(response)).toBeTruthy();
@@ -577,9 +577,9 @@ describe('PrestApiClient', () => {
     const query = 'Que';
 
     const response = await client
-      .Table('categories')
-      .List()
-      .TextSearch(field, query, 'english')
+      .table('categories')
+      .list()
+      .textSearch(field, query, 'english')
       .execute();
 
     expect(Array.isArray(response)).toBeTruthy();
@@ -603,8 +603,8 @@ describe('PrestApiClient', () => {
     ];
 
     const response = await client
-      .Table('categories')
-      .BatchInsert(data)
+      .table('categories')
+      .batchInsert(data)
       .execute();
 
     expect(response).toHaveLength(data.length);
@@ -617,9 +617,9 @@ describe('PrestApiClient', () => {
 
     // batch deletion
     const deleteRes = await client
-      .Table('categories')
-      .Delete()
-      .FilterRange('category_id', id, id + 1)
+      .table('categories')
+      .delete()
+      .filterRange('category_id', id, id + 1)
       .execute();
 
     console.log(deleteRes);

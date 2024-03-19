@@ -26,9 +26,9 @@ PrestApiClient
 
 ### Methods
 
-- [Table](PrestApiClient.md#table)
 - [createClient](PrestApiClient.md#createclient)
 - [getHttpClientMethod](PrestApiClient.md#gethttpclientmethod)
+- [table](PrestApiClient.md#table)
 
 ## Constructors
 
@@ -50,7 +50,7 @@ Creates a new Prest API client with the provided options.
 
 #### Defined in
 
-[api/client.ts:653](https://github.com/pgEdge/prest-client/blob/96f873d/src/api/client.ts#L653)
+[api/client.ts:653](https://github.com/pgEdge/prest-client/blob/148c125/src/api/client.ts#L653)
 
 ## Properties
 
@@ -62,7 +62,7 @@ The underlying HTTP client for making requests to the Prest API.
 
 #### Defined in
 
-[api/client.ts:634](https://github.com/pgEdge/prest-client/blob/96f873d/src/api/client.ts#L634)
+[api/client.ts:634](https://github.com/pgEdge/prest-client/blob/148c125/src/api/client.ts#L634)
 
 ___
 
@@ -74,7 +74,7 @@ The options used to configure the client.
 
 #### Defined in
 
-[api/client.ts:646](https://github.com/pgEdge/prest-client/blob/96f873d/src/api/client.ts#L646)
+[api/client.ts:646](https://github.com/pgEdge/prest-client/blob/148c125/src/api/client.ts#L646)
 
 ## Accessors
 
@@ -90,7 +90,7 @@ Gets the base URL of the Prest API endpoint to which the client is connected.
 
 #### Defined in
 
-[api/client.ts:952](https://github.com/pgEdge/prest-client/blob/96f873d/src/api/client.ts#L952)
+[api/client.ts:952](https://github.com/pgEdge/prest-client/blob/148c125/src/api/client.ts#L952)
 
 ___
 
@@ -106,42 +106,9 @@ Gets the name of the database to which the client is connected.
 
 #### Defined in
 
-[api/client.ts:945](https://github.com/pgEdge/prest-client/blob/96f873d/src/api/client.ts#L945)
+[api/client.ts:945](https://github.com/pgEdge/prest-client/blob/148c125/src/api/client.ts#L945)
 
 ## Methods
-
-### Table
-
-▸ **Table**(`tableName`): `Object`
-
-Returns an object for interacting with a specific table in the database.
-
-#### Parameters
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `tableName` | `undefined` \| `string` | The name of the table. |
-
-#### Returns
-
-`Object`
-
-An object with methods for interacting with the table.
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `BatchInsert` | (`data`: `any`[]) => `ChainedQuery` | Inserts multiple rows of data into the table in a single request. **`Example`** ```typescript const data = [ { category_name: 'Category 1', description: 'Description 1', picture: '\\x', }, { category_name: 'Category 2', description: 'Description 2', picture: '\\x', }, ]; const response = await client .Table('categories') .BatchInsert(data) .execute(); console.log(response); // response will be an array of inserted objects with potentially added server-generated IDs ``` |
-| `Delete` | () => `ChainedQuery` | Deletes data from the specified table based on the provided field and value. **`Throws`** An error if deleting data fails. **`Example`** ```ts const response = await client.Table('user').Delete( 'user_id', // Field to filter by userIdToDelete // Value of the field to filter by ); // Deletes data from the 'user' table where 'user_id' equals 'userIdToDelete'. // Executes DELETE `/:database/:schema/:table?field=value`. ``` |
-| `Insert` | (`data`: `any`) => `ChainedQuery` | Inserts data into the specified table. **`Throws`** An error if inserting data fails. **`Example`** ```ts const response = await client.Table('user').Insert({ user_name: 'Ronaldo', description: 'Siuuu!!!', picture: '\\x', }); // Inserts a new row into the 'user' table. // Executes POST `/:database/:schema/:table`. ``` |
-| `List` | () => `ChainedQuery` | Retrieves the structure of the specified table. **`Throws`** An error if fetching the table structure fails. **`Example`** ```ts const response = await client.Table('user').List(); // Queries the rows of the 'user' table. Public schema is used by default. // Executes GET `/:database/:schema/:table`. ``` **`Example`** ```ts const response = await client.Table('private.user').List(); // Retrieves the rows of the 'user' table in the 'private' schema. // Executes GET `/:database/:schema/:table`. ``` **`Example`** ```ts const response = await client.Table('public.').List(); // Retrieves a list of tables in the 'public' schema. // Executes GET `/:database/:schema`. // Note: The dot at the end is to ignore the table name. ``` |
-| `Show` | () => `ChainedQuery` | Retrieves data from the specified table. **`Throws`** An error if fetching data from the table fails. **`Example`** ```ts const response = await client.Table('user').Show(); // Retrieves data from the 'user' table. // Executes GET `/show/:database/:schema/:table`. ``` |
-| `Update` | (`data`: `any`) => `ChainedQuery` | Updates data in the specified table based on the provided field and value. **`Throws`** An error if updating data fails. **`Example`** ```ts const response = await client.Table('user').Update( 'user_id', // Field to filter by userIdToUpdate, // Value of the field to filter by { user_name: 'NewName', description: 'Updated description', picture: '\\x', } ); // Updates data in the 'user' table where 'user_id' equals 'userIdToUpdate'. // Executes PUT `/:database/:schema/:table?field=value`. ``` |
-
-#### Defined in
-
-[api/client.ts:765](https://github.com/pgEdge/prest-client/blob/96f873d/src/api/client.ts#L765)
-
-___
 
 ### createClient
 
@@ -155,7 +122,7 @@ Creates the underlying HTTP client with the necessary authentication headers.
 
 #### Defined in
 
-[api/client.ts:661](https://github.com/pgEdge/prest-client/blob/96f873d/src/api/client.ts#L661)
+[api/client.ts:661](https://github.com/pgEdge/prest-client/blob/148c125/src/api/client.ts#L661)
 
 ___
 
@@ -196,4 +163,37 @@ An error if the client is not initialized or the method is invalid.
 
 #### Defined in
 
-[api/client.ts:740](https://github.com/pgEdge/prest-client/blob/96f873d/src/api/client.ts#L740)
+[api/client.ts:740](https://github.com/pgEdge/prest-client/blob/148c125/src/api/client.ts#L740)
+
+___
+
+### table
+
+▸ **table**(`tableName`): `Object`
+
+Returns an object for interacting with a specific table in the database.
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `tableName` | `undefined` \| `string` | The name of the table. |
+
+#### Returns
+
+`Object`
+
+An object with methods for interacting with the table.
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `batchInsert` | (`data`: `any`[]) => `ChainedQuery` | Inserts multiple rows of data into the table in a single request. **`Example`** ```typescript const data = [ { category_name: 'Category 1', description: 'Description 1', picture: '\\x', }, { category_name: 'Category 2', description: 'Description 2', picture: '\\x', }, ]; const response = await client .table('categories') .batchInsert(data) .execute(); console.log(response); // response will be an array of inserted objects with potentially added server-generated IDs ``` |
+| `delete` | () => `ChainedQuery` | Deletes data from the specified table based on the provided field and value. **`Throws`** An error if deleting data fails. **`Example`** ```ts const response = await client.table('user').delete( 'user_id', // Field to filter by userIdToDelete // Value of the field to filter by ); // Deletes data from the 'user' table where 'user_id' equals 'userIdToDelete'. // Executes DELETE `/:database/:schema/:table?field=value`. ``` |
+| `insert` | (`data`: `any`) => `ChainedQuery` | Inserts data into the specified table. **`Throws`** An error if inserting data fails. **`Example`** ```ts const response = await client.table('user').insert({ user_name: 'Ronaldo', description: 'Siuuu!!!', picture: '\\x', }); // Inserts a new row into the 'user' table. // Executes POST `/:database/:schema/:table`. ``` |
+| `list` | () => `ChainedQuery` | Retrieves the structure of the specified table. **`Throws`** An error if fetching the table structure fails. **`Example`** ```ts const response = await client.table('user').list(); // Queries the rows of the 'user' table. Public schema is used by default. // Executes GET `/:database/:schema/:table`. ``` **`Example`** ```ts const response = await client.table('private.user').list(); // Retrieves the rows of the 'user' table in the 'private' schema. // Executes GET `/:database/:schema/:table`. ``` **`Example`** ```ts const response = await client.table('public.').list(); // Retrieves a list of tables in the 'public' schema. // Executes GET `/:database/:schema`. // Note: The dot at the end is to ignore the table name. ``` |
+| `show` | () => `ChainedQuery` | Retrieves data from the specified table. **`Throws`** An error if fetching data from the table fails. **`Example`** ```ts const response = await client.table('user').show(); // Retrieves data from the 'user' table. // Executes GET `/show/:database/:schema/:table`. ``` |
+| `update` | (`data`: `any`) => `ChainedQuery` | Updates data in the specified table based on the provided field and value. **`Throws`** An error if updating data fails. **`Example`** ```ts const response = await client.table('user').update( 'user_id', // Field to filter by userIdToUpdate, // Value of the field to filter by { user_name: 'NewName', description: 'Updated description', picture: '\\x', } ); // Updates data in the 'user' table where 'user_id' equals 'userIdToUpdate'. // Executes PUT `/:database/:schema/:table?field=value`. ``` |
+
+#### Defined in
+
+[api/client.ts:765](https://github.com/pgEdge/prest-client/blob/148c125/src/api/client.ts#L765)

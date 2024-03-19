@@ -86,7 +86,7 @@
          * @param body - The data to send in the request body (for POST and PUT requests).
          */
         function ChainedQuery(client, baseUrl, reqType, body) {
-            this.renderer = 'json';
+            this.rendererArg = 'json';
             this.sqlFunctions = [];
             this.client = client;
             this.baseUrl = baseUrl;
@@ -106,19 +106,19 @@
          * @example
          * ```typescript
          * // Retrieve the second page (10 items per page) of products
-         * const query = client.Table('products').List()
-         *   .Page(1)
+         * const query = client.table('products').list()
+         *   .page(1)
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.Page = function (pageNumber) {
+        ChainedQuery.prototype.page = function (pageNumber) {
             this.chainedOperations.push(querystring.stringify({ _page: pageNumber }));
             return this;
         };
         /**
          * Adds a page size filter to the query, specifying the number of items to retrieve per page.
          *
-         * This is useful in conjunction with `Page` to control how many results are returned at a time.
+         * This is useful in conjunction with `page` to control how many results are returned at a time.
          *
          * @param pageSize - The number of items per page.
          * @returns The ChainedQuery instance to allow for method chaining.
@@ -126,12 +126,12 @@
          * @example
          * ```typescript
          * // Retrieve the first page (10 items per page) of customers
-         * const query = client.Table('customers').List()
-         *   .PageSize(10)
+         * const query = client.table('customers').list()
+         *   .pageSize(10)
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.PageSize = function (pageSize) {
+        ChainedQuery.prototype.pageSize = function (pageSize) {
             this.chainedOperations.push(querystring.stringify({ _page_size: pageSize }));
             return this;
         };
@@ -146,12 +146,12 @@
          * @example
          * ```typescript
          * // Retrieve only the 'id', 'name', and 'price' fields from products
-         * const query = client.Table('products').List()
-         *   .Select('id', 'name', 'price')
+         * const query = client.table('products').list()
+         *   .select('id', 'name', 'price')
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.Select = function () {
+        ChainedQuery.prototype.select = function () {
             var fields = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 fields[_i] = arguments[_i];
@@ -171,17 +171,17 @@
          * @example
          * ```typescript
          * // Count the total number of products
-         * const query = client.Table('products')
-         *   .Count()
+         * const query = client.table('products')
+         *   .count()
          *   .execute();
          *
          * // Count the number of active users
-         * const query = client.Table('users')
-         *   .Count('is_active')
+         * const query = client.table('users')
+         *   .count('is_active')
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.Count = function (field) {
+        ChainedQuery.prototype.count = function (field) {
             var fieldValue = field ? field : '*';
             this.chainedOperations.push(querystring.stringify({ _count: fieldValue }));
             return this;
@@ -197,17 +197,17 @@
          * @example
          * ```typescript
          * // Check if there are any active orders
-         * const query = client.Table('orders')
-         *   .CountFirst(true)
+         * const query = client.table('orders')
+         *   .countFirst(true)
          *   .execute();
          *
          * // Retrieve the first product
-         * const query = client.Table('products')
-         *   .CountFirst()
+         * const query = client.table('products')
+         *   .countFirst()
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.CountFirst = function (countFirst) {
+        ChainedQuery.prototype.countFirst = function (countFirst) {
             if (countFirst === void 0) { countFirst = true; }
             this.chainedOperations.push(querystring.stringify({ _count_first: countFirst }));
             return this;
@@ -217,20 +217,20 @@
          *
          * By default, the response is formatted as JSON. Use this method to specify XML instead.
          *
-         * @param renderer - The desired output renderer ('json' or 'xml').
+         * @param rendererArg - The desired output renderer ('json' or 'xml').
          * @returns The ChainedQuery instance to allow for method chaining.
          *
          * @example
          * ```typescript
          * // Retrieve products in XML format
-         * const query = client.Table('products')
-         *   .Renderer('xml')
+         * const query = client.table('products')
+         *   .renderer('xml')
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.Renderer = function (renderer) {
-            this.chainedOperations.push(querystring.stringify({ _renderer: renderer }));
-            this.renderer = renderer;
+        ChainedQuery.prototype.renderer = function (rendererArg) {
+            this.chainedOperations.push(querystring.stringify({ _renderer: rendererArg }));
+            this.rendererArg = rendererArg;
             return this;
         };
         /**
@@ -244,12 +244,12 @@
          * @example
          * ```typescript
          * // Retrieve distinct product categories
-         * const query = client.Table('products').List()
-         *   .Distinct(true)
+         * const query = client.table('products').list()
+         *   .distinct(true)
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.Distinct = function (distinct) {
+        ChainedQuery.prototype.distinct = function (distinct) {
             if (distinct === void 0) { distinct = true; }
             this.chainedOperations.push(querystring.stringify({ _distinct: distinct }));
             return this;
@@ -265,17 +265,17 @@
          * @example
          * ```typescript
          * // Retrieve products ordered by price in descending order
-         * const query = client.Table('products').List()
-         *   .Order('-price')
+         * const query = client.table('products').list()
+         *   .order('-price')
          *   .execute();
          *
          * // Retrieve products ordered by price in ascending order, then by name in descending order
-         * const query = client.Table('products').List()
-         *   .Order('price', '-name')
+         * const query = client.table('products').list()
+         *   .order('price', '-name')
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.Order = function () {
+        ChainedQuery.prototype.order = function () {
             var fields = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 fields[_i] = arguments[_i];
@@ -297,13 +297,13 @@
          * @example
          * ```typescript
          * // Retrieve total sales amount grouped by product category
-         * const query = client.Table('sales').List()
-         *   .GroupBy('product_category')
-         *   .Sum('sales_amount')
+         * const query = client.table('sales').list()
+         *   .groupBy('product_category')
+         *   .sum('sales_amount')
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.GroupBy = function () {
+        ChainedQuery.prototype.groupBy = function () {
             var fields = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 fields[_i] = arguments[_i];
@@ -321,12 +321,12 @@
          * @example
          * ```typescript
          * // Retrieve products with the 'category' field equal to 'electronics'
-         * const query = client.Table('products').List()
-         *   .FilterEqual('category', 'electronics')
+         * const query = client.table('products').list()
+         *   .filterEqual('category', 'electronics')
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.FilterEqual = function (field, value) {
+        ChainedQuery.prototype.filterEqual = function (field, value) {
             this.chainedOperations.push("".concat(field, "=").concat(encodeURIComponent(value)));
             return this;
         };
@@ -341,13 +341,13 @@
          * @example
          * ```typescript
          * // Retrieve the sum of category IDs grouped by category
-         * const query = client.Table('categories').List()
-         *   .GroupBy('category_id')
-         *   .Sum('category_id')
+         * const query = client.table('categories').list()
+         *   .groupBy('category_id')
+         *   .sum('category_id')
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.Sum = function (field) {
+        ChainedQuery.prototype.sum = function (field) {
             this.sqlFunctions.push("sum:".concat(field));
             return this;
         };
@@ -362,13 +362,13 @@
          * @example
          * ```typescript
          * // Retrieve the average of category IDs grouped by category
-         * const query = client.Table('categories').List()
-         *   .GroupBy('category_id')
-         *   .Avg('category_id')
+         * const query = client.table('categories').list()
+         *   .groupBy('category_id')
+         *   .avg('category_id')
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.Avg = function (field) {
+        ChainedQuery.prototype.avg = function (field) {
             this.sqlFunctions.push("avg:".concat(field));
             return this;
         };
@@ -383,13 +383,13 @@
          * @example
          * ```typescript
          * // Retrieve the maximum category ID grouped by category
-         * const query = client.Table('categories').List()
-         *   .GroupBy('category_id')
-         *   .Max('category_id')
+         * const query = client.table('categories').list()
+         *   .groupBy('category_id')
+         *   .max('category_id')
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.Max = function (field) {
+        ChainedQuery.prototype.max = function (field) {
             this.sqlFunctions.push("max:".concat(field));
             return this;
         };
@@ -404,13 +404,13 @@
          * @example
          * ```typescript
          * // Retrieve the minimum category ID grouped by category
-         * const query = client.Table('categories').List()
-         *   .GroupBy('category_id')
-         *   .Min('category_id')
+         * const query = client.table('categories').list()
+         *   .groupBy('category_id')
+         *   .min('category_id')
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.Min = function (field) {
+        ChainedQuery.prototype.min = function (field) {
             this.sqlFunctions.push("min:".concat(field));
             return this;
         };
@@ -425,13 +425,13 @@
          * @example
          * ```typescript
          * // Retrieve the standard deviation of category IDs grouped by category
-         * const query = client.Table('categories').List()
-         *   .GroupBy('category_id')
-         *   .StdDev('category_id')
+         * const query = client.table('categories').list()
+         *   .groupBy('category_id')
+         *   .stdDev('category_id')
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.StdDev = function (field) {
+        ChainedQuery.prototype.stdDev = function (field) {
             this.sqlFunctions.push("stddev:".concat(field));
             return this;
         };
@@ -446,18 +446,18 @@
          * @example
          * ```typescript
          * // Retrieve the variance of category IDs grouped by category
-         * const query = client.Table('categories').List()
-         *   .GroupBy('category_id')
-         *   .Variance('category_id')
+         * const query = client.table('categories').list()
+         *   .groupBy('category_id')
+         *   .variance('category_id')
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.Variance = function (field) {
+        ChainedQuery.prototype.variance = function (field) {
             this.sqlFunctions.push("variance:".concat(field));
             return this;
         };
         /**
-         * Adds a Having filter to the query, specifying a condition for aggregated values after grouping.
+         * Adds a having filter to the query, specifying a condition for aggregated values after grouping.
          *
          * This is useful when you want to filter grouped results based on aggregated values.
          *
@@ -470,14 +470,14 @@
          * @example
          * ```typescript
          * // Retrieve categories where the sum of category IDs is greater than 5
-         * const query = client.Table('categories').List()
-         *   .GroupBy('category_id')
-         *   .Sum('category_id')
-         *   .Having('sum', 'category_id', '$gt', 5)
+         * const query = client.table('categories').list()
+         *   .groupBy('category_id')
+         *   .sum('category_id')
+         *   .having('sum', 'category_id', '$gt', 5)
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.Having = function (groupFunc, field, condition, value) {
+        ChainedQuery.prototype.having = function (groupFunc, field, condition, value) {
             var havingClause = "having:".concat(groupFunc, ":").concat(field, ":").concat(condition, ":").concat(encodeURIComponent(value));
             this.chainedOperations.push(havingClause);
             return this;
@@ -494,22 +494,22 @@
          * ```typescript
          * // Filter categories where 'category_id' is between 200 and 300 (inclusive)
          * const response = await client
-         *   .Table('categories')
-         *   .List()
-         *   .FilterRange('category_id', 200, 300)
+         *   .table('categories')
+         *   .list()
+         *   .filterRange('category_id', 200, 300)
          *   .execute();
          * ```
          *
          * @example
          * // Filter categories where 'category_id' is greater than or equal to 200
          * const response = await client
-         *   .Table('categories')
-         *   .List()
-         *   .FilterRange('category_id', 200)
+         *   .table('categories')
+         *   .list()
+         *   .filterRange('category_id', 200)
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.FilterRange = function (field, start, end) {
+        ChainedQuery.prototype.filterRange = function (field, start, end) {
             if (start !== undefined) {
                 this.chainedOperations.push("".concat(field, "=$gte.").concat(encodeURIComponent(start)));
             }
@@ -532,9 +532,9 @@
          * ```typescript
          * // Perform an inner join between 'categories' and 'products' tables
          * const response = await client
-         *   .Table('categories')
-         *   .List()
-         *   .Join(
+         *   .table('categories')
+         *   .list()
+         *   .join(
          *     'inner',
          *     'products',
          *     'categories.category_id',
@@ -544,8 +544,8 @@
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.Join = function (joinType, joinTable, localField, operator, foreignField) {
-            var joinClause = "_join=".concat(joinType, ":").concat(joinTable, ":").concat(localField, ":").concat(operator, ":").concat(foreignField);
+        ChainedQuery.prototype.join = function (joinType, jointable, localField, operator, foreignField) {
+            var joinClause = "_join=".concat(joinType, ":").concat(jointable, ":").concat(localField, ":").concat(operator, ":").concat(foreignField);
             this.chainedOperations.push(joinClause);
             return this;
         };
@@ -561,13 +561,13 @@
          * ```typescript
          * // Assuming a 'mock_json' table with a 'jsonb_data' field containing JSON data
          * const response = await client
-         *   .Table('mock_json')
-         *   .List()
-         *   .JSONbFilter('jsonb_data', 'tags', 1)
+         *   .table('mock_json')
+         *   .list()
+         *   .jsonbFilter('jsonb_data', 'tags', 1)
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.JSONbFilter = function (field, jsonField, value) {
+        ChainedQuery.prototype.jsonbFilter = function (field, jsonField, value) {
             var filterClause = "".concat(field, "->>").concat(jsonField, ":jsonb=").concat(encodeURIComponent(value));
             this.chainedOperations.push(filterClause);
             return this;
@@ -583,17 +583,17 @@
          * @example
          * ```typescript
          * // Perform a full-text search for documents containing 'fat' and 'rat'
-         * const query = client.Table('documents').List()
-         *   .TextSearch('content', 'fat & rat')
+         * const query = client.table('documents').list()
+         *   .textSearch('content', 'fat & rat')
          *   .execute();
          *
          * // Perform a full-text search in Portuguese language for documents containing 'gato' and 'cão'
-         * const query = client.Table('documents').List()
-         *   .TextSearch('content', 'gato & cão', 'portuguese')
+         * const query = client.table('documents').list()
+         *   .textSearch('content', 'gato & cão', 'portuguese')
          *   .execute();
          * ```
          */
-        ChainedQuery.prototype.TextSearch = function (field, query, language) {
+        ChainedQuery.prototype.textSearch = function (field, query, language) {
             var tsQuery = "".concat(field).concat(language ? '$' + language : '', ":tsquery=").concat(encodeURIComponent(query));
             this.chainedOperations.push(tsQuery);
             return this;
@@ -627,7 +627,7 @@
                             return [4 /*yield*/, httpClientMethod(chainedUrl, this.body)];
                         case 2:
                             response = _a.sent();
-                            if (this.renderer === 'json') {
+                            if (this.rendererArg === 'json') {
                                 return [2 /*return*/, response.json()];
                             }
                             else {
@@ -790,13 +790,13 @@
          * @param tableName - The name of the table.
          * @returns An object with methods for interacting with the table.
          */
-        PrestApiClient.prototype.Table = function (tableName) {
+        PrestApiClient.prototype.table = function (tableName) {
             var _this = this;
             if (!this.client) {
                 throw new Error('Client not initialized');
             }
             if (!tableName) {
-                throw new Error('Table name is required');
+                throw new Error('table name is required');
             }
             var schemaName = 'public';
             if (tableName.includes('.')) {
@@ -805,27 +805,27 @@
                 tableName = parts[1];
             }
             return {
-                List: function () {
+                list: function () {
                     var baseUrl = "".concat(_this.base_url, "/").concat(_this.database, "/").concat(schemaName, "/").concat(tableName);
                     return new ChainedQuery(_this, baseUrl, 'get', null);
                 },
-                Show: function () {
+                show: function () {
                     var baseUrl = "".concat(_this.base_url, "/show/").concat(_this.database, "/").concat(schemaName, "/").concat(tableName);
                     return new ChainedQuery(_this, baseUrl, 'get', null);
                 },
-                Insert: function (data) {
+                insert: function (data) {
                     var baseUrl = "".concat(_this.base_url, "/").concat(_this.database, "/").concat(schemaName, "/").concat(tableName);
                     return new ChainedQuery(_this, baseUrl, 'post', data);
                 },
-                BatchInsert: function (data) {
+                batchInsert: function (data) {
                     var baseUrl = "".concat(_this.base_url, "/batch/").concat(_this.database, "/").concat(schemaName, "/").concat(tableName);
                     return new ChainedQuery(_this, baseUrl, 'post', data);
                 },
-                Update: function (data) {
+                update: function (data) {
                     var baseUrl = "".concat(_this.base_url, "/").concat(_this.database, "/").concat(schemaName, "/").concat(tableName);
                     return new ChainedQuery(_this, baseUrl, 'put', data);
                 },
-                Delete: function () {
+                delete: function () {
                     var baseUrl = "".concat(_this.base_url, "/").concat(_this.database, "/").concat(schemaName, "/").concat(tableName);
                     return new ChainedQuery(_this, baseUrl, 'delete', null);
                 },
