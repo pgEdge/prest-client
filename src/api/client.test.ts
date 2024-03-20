@@ -174,7 +174,7 @@ describe('PrestApiClient', () => {
 
     console.log(response);
     expect(Array.isArray(response)).toBeTruthy();
-    expect(response.length).toBe(9);
+    expect(response.length).toBe(10);
     expect(response[0]).toHaveProperty('category_id');
   });
 
