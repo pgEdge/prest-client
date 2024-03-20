@@ -78,7 +78,7 @@ const insertData = async () => {
 };
 ```
 
-For more examples, please refer to the [examples](./examples) directory in the repository.
+For more examples, please refer to the [examples](https://github.com/pgEdge/prest-client/tree/examples) directory in the repository.
 
 ## Documentation
 
