@@ -1,6 +1,6 @@
 {
   "name": "prest-client",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Typescript/JavaScript client for Prest",
   "cdn": "dist/index.umd.js",
   "main": "dist/index.js",
