@@ -4,13 +4,13 @@
   "description": "",
   "main": "main.ts",
   "scripts": {
-    "dev": "npx tsx main.ts"
+    "dev": "npx tsx"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "prest-client": "^0.1.1",
+    "prest-client": "^0.1.2",
     "tsx": "^4.7.1"
   },
   "type": "module"

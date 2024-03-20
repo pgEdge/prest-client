@@ -249,10 +249,10 @@ node-fetch@^3.3.2:
     fetch-blob "^3.1.4"
     formdata-polyfill "^4.0.10"
 
-prest-client@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/prest-client/-/prest-client-0.1.1.tgz#a5f14b26c50549a07812824ba5073767ca3aa24e"
-  integrity sha512-QEPc9c/ujlcfWbWnP9c+Ca9LEzdSH1g6VN4En0oT1pKpYhYuam3wfQLR8Wuf28bFynT0xR7piODEQ6M2q1JPug==
+prest-client@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/prest-client/-/prest-client-0.1.2.tgz#11e596ae464333b47c6be9a3d47687e5f4fd1e2e"
+  integrity sha512-V5l+7hIGY5IiHChaNtKVWVdpuWCdknMwYhzNuP3vwjky7tO0PsXNHFFimg+gdFrn+7tdFgMAtfTEwuaVvA9ETg==
   dependencies:
     axios "^1.6.7"
     dotenv "^16.4.5"
