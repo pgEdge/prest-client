@@ -70,7 +70,7 @@ const fetchUsers = async () => {
 const insertData = async () => {
   const data = {
     user_id: 1,
-    user_name: 'john doe',
+    user_name: 'john doe', 
   };
 
   const response = await client.table('users').insert(data).execute();
